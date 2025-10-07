@@ -1,6 +1,8 @@
 import PatientHeader from './components/PatientHeader';
 import VitalSigns from './components/VitalSigns';
 import ProjectSection from './components/ProjectSection';
+import SkillsDiagnostic from './components/SkillsDiagnostic';
+import ExperienceTimeline from './components/ExperienceTimeline';
 
 export default function Home() {
   return (
@@ -9,6 +11,8 @@ export default function Home() {
         <PatientHeader />
         <VitalSigns />
         <ProjectSection />
+        <SkillsDiagnostic />
+        <ExperienceTimeline />
       </div>
     </main>
   );
