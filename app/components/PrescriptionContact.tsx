@@ -19,7 +19,7 @@ export default function PrescriptionContact() {
           </div>
           <div className="flex">
             <span className="font-semibold w-32">DIAGNOSIS:</span>
-            <span>Need for talented full-stack developer</span>
+            <span>Need for talented full-stack software engineer</span>
           </div>
           <div className="flex">
             <span className="font-semibold w-32">TREATMENT:</span>
@@ -35,19 +35,19 @@ export default function PrescriptionContact() {
           
           {/* Email */}
           <a
-            href="mailto:your.email@example.com"
+            href="mailto:skyniclea@gmail.com"
             className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors"
           >
             <div className="text-2xl">📧</div>
             <div>
               <div className="font-semibold text-slate-800">Direct Line</div>
-              <div className="text-sm text-slate-600">your.email@example.com</div>
+              <div className="text-sm text-slate-600">skyniclea@gmail.com</div>
             </div>
           </a>
 
           {/* LinkedIn */}
           <a
-            href="https://linkedin.com/in/yourprofile"
+            href="https://www.linkedin.com/in/skylar-lea/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200 hover:bg-blue-100 transition-colors"
@@ -61,7 +61,7 @@ export default function PrescriptionContact() {
 
           {/* GitHub */}
           <a
-            href="https://github.com/yourusername"
+            href="https://github.com/skylarnlea"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-4 bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors"
@@ -72,28 +72,13 @@ export default function PrescriptionContact() {
               <div className="text-sm text-slate-600">View Projects & Code</div>
             </div>
           </a>
-
-          {/* Calendly/Schedule */}
-          <a
-            href="https://calendly.com/yourlink"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 transition-colors"
-          >
-            <div className="text-2xl">📅</div>
-            <div>
-              <div className="font-semibold text-slate-800">Schedule Consultation</div>
-              <div className="text-sm text-slate-600">Book a meeting</div>
-            </div>
-          </a>
-
         </div>
       </div>
 
       {/* Resume Download */}
       <div className="mb-6">
         <a
-          href="/resume.pdf"
+          href="../public/skylar-lea-resume.pdf" 
           download
           className="block w-full bg-teal-500 hover:bg-teal-600 text-white text-center py-4 rounded-lg transition-colors font-semibold text-lg"
         >
@@ -108,7 +93,7 @@ export default function PrescriptionContact() {
             <span className="font-semibold">Refills:</span> Unlimited
           </div>
           <div>
-            <span className="font-semibold">Prescriber:</span> Skylar Lea, Full-Stack Developer
+            <span className="font-semibold">Prescriber:</span> Skylar Lea, Full-Stack Software Engineer
           </div>
         </div>
         <div className="mt-2 text-xs text-slate-500 italic">
