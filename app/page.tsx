@@ -3,6 +3,7 @@ import VitalSigns from './components/VitalSigns';
 import ProjectSection from './components/ProjectSection';
 import SkillsDiagnostic from './components/SkillsDiagnostic';
 import ExperienceTimeline from './components/ExperienceTimeline';
+import PrescriptionContact from './components/PrescriptionContact';
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <ProjectSection />
         <SkillsDiagnostic />
         <ExperienceTimeline />
+        <PrescriptionContact />
       </div>
     </main>
   );
