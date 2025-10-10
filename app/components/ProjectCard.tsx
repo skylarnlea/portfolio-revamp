@@ -8,6 +8,7 @@ type ProjectCardProps = {
   techStack: string[];
   liveLink?: string;
   githubLink?: string;
+  isPrivate?: boolean;
 };
 
 export default function ProjectCard({
@@ -20,6 +21,7 @@ export default function ProjectCard({
   techStack,
   liveLink,
   githubLink,
+  isPrivate = false,
 }: ProjectCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-lg p-8 border-l-4 border-cyan-500 hover:shadow-xl transition-shadow">
@@ -37,6 +39,16 @@ export default function ProjectCard({
           {prognosis}
         </div>
       </div>
+
+      {/* Private Project Badge */}
+      {isPrivate && (
+        <div className="mb-4 flex items-center gap-2 bg-slate-100 px-3 py-2 rounded-lg border border-slate-300">
+          <span className="text-lg">🔒</span>
+          <span className="text-sm font-semibold text-slate-700">
+            Private Company Project - Code & Demo Under NDA
+          </span>
+        </div>
+      )}
 
       {/* Medical Details */}
       <div className="space-y-3 mb-6">
@@ -79,29 +91,38 @@ export default function ProjectCard({
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-3">
-        {liveLink && (
-          <a
-            href={liveLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 bg-teal-500 hover:bg-teal-600 text-white text-center py-2 rounded-lg transition-colors font-semibold"
-          >
-            VIEW LIVE SYSTEM
-          </a>
-        )}
-        {githubLink && (
-          <a
-            href={githubLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 bg-slate-700 hover:bg-slate-800 text-white text-center py-2 rounded-lg transition-colors font-semibold"
-          >
-            VIEW CODE
-          </a>
-        )}
-      </div>
+      {/* Action Buttons - Only show if links exist */}
+      {(liveLink || githubLink) && (
+        <div className="flex gap-3">
+          {liveLink && (
+            <a
+              href={liveLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 bg-teal-500 hover:bg-teal-600 text-white text-center py-2 rounded-lg transition-colors font-semibold"
+            >
+              VIEW LIVE DEMO
+            </a>
+          )}
+          {githubLink && (
+            <a
+              href={githubLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 bg-slate-700 hover:bg-slate-800 text-white text-center py-2 rounded-lg transition-colors font-semibold"
+            >
+              VIEW CODE
+            </a>
+          )}
+        </div>
+      )}
+
+      {/* Private project note */}
+      {isPrivate && (
+        <div className="mt-4 text-xs text-slate-500 italic">
+          Details available upon request during interview
+        </div>
+      )}
     </div>
   );
 }

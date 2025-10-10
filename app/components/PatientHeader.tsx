@@ -15,7 +15,7 @@ export default function PatientHeader() {
             <div className="space-y-2 bg-slate-50 p-4 rounded">
                 <div className="flex justify-between">
                     <span className="font-semibold text-slate-700">PATIENT ID:</span>
-                    <span className="text-slate-600">FULLSTACK-2024-SL</span>
+                    <span className="text-slate-600">FULLSTACK-2025-SL</span>
                 </div>
         
                 <div className="flex justify-between">
