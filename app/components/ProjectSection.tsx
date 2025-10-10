@@ -1,6 +1,6 @@
 import ProjectCard from './ProjectCard';
 
-export default function ProjectsSection() {
+export default function ProjectSection() {
   return (
     <div className="mt-8">
       {/* Section Header */}
