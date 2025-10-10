@@ -2,6 +2,7 @@ type ExperienceProps = {
   year: string;
   role: string;
   company: string;
+  location: string;
   status: string;
   department: string;
   accomplishments: string[];
@@ -12,6 +13,7 @@ function TimelineItem({
   year,
   role,
   company,
+  location,
   status,
   department,
   accomplishments,
@@ -32,6 +34,7 @@ function TimelineItem({
             <div className="text-sm font-bold text-teal-600 mb-1">{year}</div>
             <h3 className="text-xl font-bold text-slate-800">{role}</h3>
             <p className="text-slate-600">{company}</p>
+            <p className="text-sm text-slate-500">{location}</p>
           </div>
           <div className={`px-3 py-1 rounded-full text-sm font-semibold ${
             current 
@@ -76,46 +79,56 @@ export default function ExperienceTimeline() {
 
       {/* Timeline */}
       <div className="max-w-4xl">
+        
+        {/* Current Role: Cheíl USA (Samsung) */}
         <TimelineItem
           year="05/2025 – PRESENT"
           role="Full-Stack Software Engineer"
-          company="Cheíl USA"
+          company="Cheíl USA (Samsung)"
+          location="Plano, TX"
           status="Active Treatment"
           department="Software Engineering"
           accomplishments={[
-            "Developed full-stack architecture from the ground up for Jebi, a gamified influencer management platform, slashing cloud costs by 65%",
-            "Enabled transition into a multi-tenant B2B SaaS product",
-            "Assisted in backend development of multi-channel AI ecosystem (Web, Reddit Bot, Retail VA) using GCP Vertex AI",
-            "Implemented RAG model for scalable, up-to-date responses on Samsung products",
-            "Optimized performance through model caching, model fallback, and circuit breaker integrations"
+            "Developed full-stack architecture from ground-up rebuild of Jebi platform, reducing cloud costs by 65%",
+            "Led backend initiative to scale multi-channel AI ecosystem (Web, Reddit Bot, Retail VA) using GCP Vertex AI and RAG model",
+            "Engineered RAG-powered chatbot with Next.js and Vertex AI Gemini 2.5 Flash, potentially reducing HR workload by 60%",
+            "Built AI-powered project management platform achieving 85% timeline forecast accuracy and 30% reduction in overruns",
+            "Supported production launch of conversational AI with WebSocket streaming, achieving 95% transcription accuracy",
+            "Partnered with T-Mobile and Verizon to lead development of responsive frontend features"
           ]}
           current={true}
         />
 
+        {/* Healthcare Background */}
         <TimelineItem
-          year="2012 – 2024"
-          role="Medical Aesthetician, Patient Care Coordinator, Site-Manager/Lab Director"
+          year="2014 – 2024"
+          role="Healthcare Professional"
           company="Various Healthcare Facilities"
+          location="Multiple Locations"
           status="Completed"
-          department="Healthcare Field"
+          department="Medical Services & Systems"
           accomplishments={[
-            "10+ years of patient care and healthcare systems experience",
-            "Gained deep understanding of medical workflows and system requirements",
-            "Developed problem-solving skills in high-pressure environments",
-            "Successfully transitioned technical knowledge into software engineering",
-            "Unique perspective bridging healthcare domain and technology solutions"
+            "10+ years of direct patient care and healthcare systems experience",
+            "Developed critical thinking and problem-solving skills in high-pressure, time-sensitive environments",
+            "Gained deep understanding of healthcare workflows, compliance requirements (HIPAA), and medical data systems",
+            "Built strong attention to detail and accuracy—essential for both patient safety and clean code",
+            "Unique perspective on user-centric design: understanding real-world needs from the healthcare provider side",
+            "Successfully transitioned domain expertise into full-stack software engineering"
           ]}
         />
+
       </div>
 
-      {/* Footer Note */}
+      {/* Footer Note - Ties Healthcare to Development */}
       <div className="mt-8 p-4 bg-teal-50 rounded-lg border border-teal-200">
         <p className="text-sm text-slate-700">
-          <span className="font-semibold">Physicians Assessment:</span> Patient demonstrates 
-          exceptional ability to bridge healthcare domain expertise with modern software 
-          development. Unique background provides valuable perspective on building user-centric 
-          technical solutions. <span className="font-semibold text-teal-700">Prognosis for 
-          career growth: Excellent.</span>
+          <span className="font-semibold">Physician Assessment:</span> Patient demonstrates 
+          exceptional ability to bridge healthcare domain expertise with modern software development. 
+          Ten years of medical experience provides invaluable insight into building accurate, 
+          compliant, and user-focused technical solutions—particularly valuable for healthcare 
+          technology, SaaS products, and systems requiring high reliability. 
+          <span className="font-semibold text-teal-700"> Prognosis for career growth: Excellent. 
+          Recommended for roles requiring both technical skill and domain understanding.</span>
         </p>
       </div>
     </div>

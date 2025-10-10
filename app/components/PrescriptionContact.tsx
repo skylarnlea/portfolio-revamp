@@ -6,7 +6,7 @@ export default function PrescriptionContact() {
         <div className="text-4xl">℞</div>
         <div>
           <h2 className="text-2xl font-bold text-slate-800">PRESCRIPTION FOR SUCCESS</h2>
-          <p className="text-slate-600">skylarlea.dev</p>
+          <p className="text-slate-600">Skylar Lea - Full-Stack Software Engineer</p>
         </div>
       </div>
 
@@ -19,11 +19,15 @@ export default function PrescriptionContact() {
           </div>
           <div className="flex">
             <span className="font-semibold w-32">DIAGNOSIS:</span>
-            <span>Need for talented full-stack software engineer</span>
+            <span>Need for talented full-stack developer with healthcare insight</span>
           </div>
           <div className="flex">
             <span className="font-semibold w-32">TREATMENT:</span>
             <span>Skylar Lea, 1 developer, full-time</span>
+          </div>
+          <div className="flex">
+            <span className="font-semibold w-32">LOCATION:</span>
+            <span>Dallas, TX</span>
           </div>
         </div>
       </div>
@@ -42,6 +46,18 @@ export default function PrescriptionContact() {
             <div>
               <div className="font-semibold text-slate-800">Direct Line</div>
               <div className="text-sm text-slate-600">skyniclea@gmail.com</div>
+            </div>
+          </a>
+
+          {/* Phone */}
+          <a
+            href="tel:816-602-2655"
+            className="flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200 hover:bg-green-100 transition-colors"
+          >
+            <div className="text-2xl">📱</div>
+            <div>
+              <div className="font-semibold text-slate-800">Call/Text</div>
+              <div className="text-sm text-slate-600">(816) 602 2655</div>
             </div>
           </a>
 
@@ -72,13 +88,14 @@ export default function PrescriptionContact() {
               <div className="text-sm text-slate-600">View Projects & Code</div>
             </div>
           </a>
+
         </div>
       </div>
 
       {/* Resume Download */}
       <div className="mb-6">
         <a
-          href="../public/skylar-lea-resume.pdf" 
+          href="../public/skylar-lea-resume.pdf"
           download
           className="block w-full bg-teal-500 hover:bg-teal-600 text-white text-center py-4 rounded-lg transition-colors font-semibold text-lg"
         >
@@ -93,12 +110,12 @@ export default function PrescriptionContact() {
             <span className="font-semibold">Refills:</span> Unlimited
           </div>
           <div>
-            <span className="font-semibold">Prescriber:</span> Skylar Lea, Full-Stack Software Engineer
+            <span className="font-semibold">Prescriber:</span> Skylar Lea, Full-Stack Developer
           </div>
         </div>
         <div className="mt-2 text-xs text-slate-500 italic">
           Prescription valid for immediate hire consideration. Side effects may include: 
-          increased productivity, cleaner code, and innovative solutions.
+          increased productivity, cleaner code, innovative solutions, and unique healthcare-tech insights.
         </div>
       </div>
     </div>
