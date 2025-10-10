@@ -9,18 +9,19 @@ function SkillBar({ name, level, category }: SkillProps) {
   const categoryColors = {
     frontend: 'bg-blue-500',
     backend: 'bg-green-500',
-    tools: 'bg-purple-500',
     cloud: 'bg-orange-500',
+    testing: 'bg-purple-500',
+    orm: 'bg-pink-500',
   };
 
   const bgColor = categoryColors[category as keyof typeof categoryColors] || 'bg-teal-500';
 
   // Determine proficiency label
   let proficiency = '';
-  if (level >= 90) proficiency = 'Expert';
-  else if (level >= 80) proficiency = 'Advanced';
-  else if (level >= 70) proficiency = 'Proficient';
-  else proficiency = 'Intermediate';
+  if (level >= 85) proficiency = 'Advanced';
+  else if (level >= 75) proficiency = 'Proficient';
+  else if (level >= 65) proficiency = 'Intermediate';
+  else proficiency = 'Developing';
 
   return (
     <div className="mb-4">
@@ -47,56 +48,59 @@ export default function SkillsDiagnostic() {
         <p className="text-slate-600 mt-1">Technical Proficiency Assessment</p>
       </div>
 
-      {/* Skills Grid */}
+      {/* Skills Grid - Matches Resume Categories */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         
         {/* Frontend Panel */}
         <div className="bg-blue-50 p-6 rounded-lg border border-blue-100">
           <h3 className="text-lg font-bold text-blue-900 mb-4">
-            LAB RESULTS - FRONTEND PANEL
+            LAB RESULTS - FRONTEND
           </h3>
-          <SkillBar name="Next.js" level={90} category="frontend" />
-          <SkillBar name="React" level={88} category="frontend" />
-          <SkillBar name="TypeScript" level={85} category="frontend" />
-          <SkillBar name="Tailwind CSS" level={87} category="frontend" />
-          <SkillBar name="JavaScript" level={90} category="frontend" />
-          <SkillBar name="HTML/CSS" level={92} category="frontend" />
+          <SkillBar name="React" level={85} category="frontend" />
+          <SkillBar name="TypeScript" level={80} category="frontend" />
+          <SkillBar name="Next.js" level={80} category="frontend" />
+          <SkillBar name="Tailwind CSS" level={80} category="frontend" />
         </div>
 
         {/* Backend Panel */}
         <div className="bg-green-50 p-6 rounded-lg border border-green-100">
           <h3 className="text-lg font-bold text-green-900 mb-4">
-            LAB RESULTS - BACKEND PANEL
+            LAB RESULTS - BACKEND
           </h3>
-          <SkillBar name="Node.js" level={87} category="backend" />
-          <SkillBar name="Express" level={80} category="backend" />
-          <SkillBar name="PostgreSQL" level={78} category="backend" />
+          <SkillBar name="Node.js" level={85} category="backend" />
+          <SkillBar name="Express" level={85} category="backend" />
+          <SkillBar name="PostgreSQL" level={85} category="backend" />
           <SkillBar name="RESTful APIs" level={85} category="backend" />
-          <SkillBar name="Prisma" level={75} category="backend" />
         </div>
 
-        {/* Cloud/DevOps Panel */}
+        {/* Cloud & DevOps Panel */}
         <div className="bg-orange-50 p-6 rounded-lg border border-orange-100">
           <h3 className="text-lg font-bold text-orange-900 mb-4">
-            SPECIALIZED DIAGNOSTICS - CLOUD
+            CLOUD & DEVOPS DIAGNOSTICS
           </h3>
-          <SkillBar name="Google Cloud Platform" level={85} category="cloud" />
-          <SkillBar name="Cloud Run" level={82} category="cloud" />
-          <SkillBar name="Firebase" level={80} category="cloud" />
-          <SkillBar name="Terraform" level={75} category="cloud" />
-          <SkillBar name="Vertex AI" level={78} category="cloud" />
+          <SkillBar name="Google Cloud Platform" level={80} category="cloud" />
+          <SkillBar name="Firebase" level={75} category="cloud" />
+          <SkillBar name="Terraform" level={60} category="cloud" />
         </div>
 
-        {/* Tools Panel */}
+        {/* Testing & Tools Panel */}
         <div className="bg-purple-50 p-6 rounded-lg border border-purple-100">
           <h3 className="text-lg font-bold text-purple-900 mb-4">
-            DIAGNOSTIC TOOLS & TESTING
+            TESTING & TOOLS
           </h3>
-          <SkillBar name="Git/GitHub" level={88} category="tools" />
-          <SkillBar name="VS Code" level={90} category="tools" />
-          <SkillBar name="Postman" level={82} category="tools" />
-          <SkillBar name="Jest/Playwright" level={75} category="tools" />
-          <SkillBar name="Figma" level={70} category="tools" />
+          <SkillBar name="Mocha" level={85} category="testing" />
+          <SkillBar name="Chai" level={85} category="testing" />
+          <SkillBar name="Git" level={85} category="testing" />
+        </div>
+
+        {/* ORMs Panel */}
+        <div className="bg-pink-50 p-6 rounded-lg border border-pink-100 md:col-span-2">
+          <h3 className="text-lg font-bold text-pink-900 mb-4">
+            DATABASE MANAGEMENT
+          </h3>
+          <div className="max-w-md">
+            <SkillBar name="Prisma" level={80} category="orm" />
+          </div>
         </div>
 
       </div>
@@ -105,8 +109,8 @@ export default function SkillsDiagnostic() {
       <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
         <p className="text-sm text-slate-600 italic">
           <span className="font-semibold">Clinical Note:</span> Proficiency levels based on 
-          production experience, project complexity, and continuous learning. All skills 
-          actively maintained and regularly updated.
+          production experience at Cheíl USA (Samsung), hands-on project implementation, and continuous 
+          learning. All skills actively maintained with enterprise-level applications.
         </p>
       </div>
     </div>
