@@ -258,11 +258,20 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                     <tr>
                       <td style={{ padding: '15px' }}>
                         <div style={{ textAlign: 'center', marginBottom: '12px' }}>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img 
-                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='200' viewBox='0 0 160 200'%3E%3Crect width='160' height='200' fill='white' stroke='%23333' stroke-width='1'/%3E%3Ctext x='80' y='105' text-anchor='middle' dominant-baseline='middle' font-family='Arial' font-size='12' fill='%23333'%3E[Your Photo]%3C/text%3E%3C/svg%3E"
-                            alt="Profile"
-                            style={{ border: '1px solid black' }}
+                          <Image 
+                            src="/images/profilephoto.jpg"
+                            alt="Profile Photo"
+                            width={300}
+                            height={400}
+                            style={{ 
+                              border: '1px solid black',
+                              objectFit: 'contain',
+                              width: '100%',
+                              height: 'auto',
+                              maxWidth: '300px',
+                              maxHeight: '400px'
+                            }}
+                            priority
                           />
                           <div style={{ fontSize: '12px', marginTop: '6px', fontStyle: 'italic', color: '#333' }}>
                             {profile.quote.split('\n').map((line, i) => (
@@ -281,28 +290,57 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                             <div><strong>Last Login:</strong></div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
                               {/* Signal bars */}
-                              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px' }}>
-                                <div style={{ width: '4px', height: '6px', backgroundColor: '#00CC00', border: '1px solid #008800' }}></div>
-                                <div style={{ width: '4px', height: '8px', backgroundColor: '#00CC00', border: '1px solid #008800' }}></div>
-                                <div style={{ width: '4px', height: '6px', backgroundColor: '#00CC00', border: '1px solid #008800' }}></div>
+                              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1px', marginRight: '4px' }}>
+                                <div style={{ 
+                                  width: '3px', 
+                                  height: '4px', 
+                                  backgroundColor: '#66CC66', 
+                                  border: '1px solid #339933',
+                                  borderBottom: 'none'
+                                }}></div>
+                                <div style={{ 
+                                  width: '3px', 
+                                  height: '7px', 
+                                  backgroundColor: '#66CC66', 
+                                  border: '1px solid #339933',
+                                  borderBottom: 'none'
+                                }}></div>
+                                <div style={{ 
+                                  width: '3px', 
+                                  height: '10px', 
+                                  backgroundColor: '#66CC66', 
+                                  border: '1px solid #339933',
+                                  borderBottom: 'none'
+                                }}></div>
+                                <div style={{ 
+                                  width: '3px', 
+                                  height: '13px', 
+                                  backgroundColor: '#66CC66', 
+                                  border: '1px solid #339933',
+                                  borderBottom: 'none'
+                                }}></div>
                               </div>
                               {/* Person icon */}
                               <div style={{ 
-                                width: '16px', 
-                                height: '16px', 
-                                backgroundColor: '#FF6600', 
+                                width: '14px', 
+                                height: '14px', 
+                                backgroundColor: '#FF9900', 
                                 borderRadius: '50%',
-                                border: '1px solid #CC5500',
-                                position: 'relative'
+                                border: '1px solid #CC6600',
+                                position: 'relative',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center'
                               }}>
                                 <div style={{
                                   width: '8px',
                                   height: '8px',
-                                  backgroundColor: '#FF6600',
+                                  backgroundColor: '#FF9900',
                                   position: 'absolute',
-                                  bottom: '-4px',
-                                  left: '4px',
-                                  border: '1px solid #CC5500'
+                                  bottom: '-5px',
+                                  borderRadius: '4px 4px 0 0',
+                                  border: '1px solid #CC6600',
+                                  borderBottom: 'none'
                                 }}></div>
                               </div>
                               {/* Online Now text */}
