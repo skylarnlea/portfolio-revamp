@@ -1,6 +1,5 @@
-'use client';
-
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 
 interface ProfileData {
   name: string;
@@ -30,19 +29,19 @@ interface BlogEntry {
 interface MySpacePortfolioProps {
   profileData?: Partial<ProfileData>;
   songUrl?: string;
-  songTitle?: string;
-  artistName?: string;
   backgroundImage?: string;
   blogEntries?: BlogEntry[];
   aboutMe?: string;
   whoIdLikeToMeet?: string;
   friendCount?: number;
+  theme?: 'pink' | 'blue' | 'green' | 'purple' | 'peach' | 'lavender';
 }
 
 const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
   profileData = {},
   songUrl = "",
   backgroundImage = "",
+  theme = 'pink',
   blogEntries = [
     { title: "My Latest React Project", link: "#" },
     { title: "Learning TypeScript", link: "#" },
@@ -57,7 +56,116 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
+  const [showLegalModal, setShowLegalModal] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Pastel color themes
+  const themes = {
+    pink: {
+      background: '#FFCCFF',
+      profileBg: '#DDBBFF',
+      profileHeader: '#9966CC',
+      contactBg: '#DDBBFF',
+      contactHeader: '#9966CC',
+      urlBg: '#DDBBFF',
+      urlHeader: '#9966CC',
+      detailsBg: '#DDBBFF',
+      detailsHeader: '#9966CC',
+      blogBg: '#DDBBFF',
+      blogHeader: '#9966CC',
+      blurbsBg: '#FFDDAA',
+      blurbsHeader: '#DD8844',
+      friendsBg: '#FFDDAA',
+      friendsHeader: '#DD8844'
+    },
+    blue: {
+      background: '#CCE7FF',
+      profileBg: '#B3D9FF',
+      profileHeader: '#4D94FF',
+      contactBg: '#B3D9FF',
+      contactHeader: '#4D94FF',
+      urlBg: '#B3D9FF',
+      urlHeader: '#4D94FF',
+      detailsBg: '#B3D9FF',
+      detailsHeader: '#4D94FF',
+      blogBg: '#B3D9FF',
+      blogHeader: '#4D94FF',
+      blurbsBg: '#D4EDDA',
+      blurbsHeader: '#6C9F7F',
+      friendsBg: '#D4EDDA',
+      friendsHeader: '#6C9F7F'
+    },
+    green: {
+      background: '#D4EDDA',
+      profileBg: '#C3E6CB',
+      profileHeader: '#6C9F7F',
+      contactBg: '#C3E6CB',
+      contactHeader: '#6C9F7F',
+      urlBg: '#C3E6CB',
+      urlHeader: '#6C9F7F',
+      detailsBg: '#C3E6CB',
+      detailsHeader: '#6C9F7F',
+      blogBg: '#C3E6CB',
+      blogHeader: '#6C9F7F',
+      blurbsBg: '#FFE4B3',
+      blurbsHeader: '#D4A574',
+      friendsBg: '#FFE4B3',
+      friendsHeader: '#D4A574'
+    },
+    purple: {
+      background: '#E6D7FF',
+      profileBg: '#D9CCFF',
+      profileHeader: '#8A67FF',
+      contactBg: '#D9CCFF',
+      contactHeader: '#8A67FF',
+      urlBg: '#D9CCFF',
+      urlHeader: '#8A67FF',
+      detailsBg: '#D9CCFF',
+      detailsHeader: '#8A67FF',
+      blogBg: '#D9CCFF',
+      blogHeader: '#8A67FF',
+      blurbsBg: '#FFD9E6',
+      blurbsHeader: '#E673A3',
+      friendsBg: '#FFD9E6',
+      friendsHeader: '#E673A3'
+    },
+    peach: {
+      background: '#FFE4CC',
+      profileBg: '#FFD9B3',
+      profileHeader: '#E6905A',
+      contactBg: '#FFD9B3',
+      contactHeader: '#E6905A',
+      urlBg: '#FFD9B3',
+      urlHeader: '#E6905A',
+      detailsBg: '#FFD9B3',
+      detailsHeader: '#E6905A',
+      blogBg: '#FFD9B3',
+      blogHeader: '#E6905A',
+      blurbsBg: '#E6F3E6',
+      blurbsHeader: '#7BB37B',
+      friendsBg: '#E6F3E6',
+      friendsHeader: '#7BB37B'
+    },
+    lavender: {
+      background: '#F0E6FF',
+      profileBg: '#E6CCFF',
+      profileHeader: '#B366FF',
+      contactBg: '#E6CCFF',
+      contactHeader: '#B366FF',
+      urlBg: '#E6CCFF',
+      urlHeader: '#B366FF',
+      detailsBg: '#E6CCFF',
+      detailsHeader: '#B366FF',
+      blogBg: '#E6CCFF',
+      blogHeader: '#B366FF',
+      blurbsBg: '#FFF0E6',
+      blurbsHeader: '#E6B380',
+      friendsBg: '#FFF0E6',
+      friendsHeader: '#E6B380'
+    }
+  };
+
+  const currentTheme = themes[theme];
 
   // Default profile data
   const defaultProfile: ProfileData = {
@@ -99,15 +207,12 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
   }, [songUrl]);
 
   const togglePlay = (): void => {
-    const audio = audioRef.current;
-    if (audio && songUrl) {
-      if (isPlaying) {
-        audio.pause();
-      } else {
-        audio.play().catch(e => console.log("Audio play failed:", e));
-      }
-      setIsPlaying(!isPlaying);
-    }
+    // Show legal disclaimer instead of playing music
+    setShowLegalModal(true);
+  };
+
+  const closeLegalModal = (): void => {
+    setShowLegalModal(false);
   };
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>): void => {
@@ -130,55 +235,90 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
 
   const backgroundStyle: React.CSSProperties = backgroundImage 
     ? { backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-    : { backgroundColor: '#FFCCFF' };
+    : { backgroundColor: currentTheme.background };
 
   return (
-    <div style={{ minHeight: '100vh', ...backgroundStyle, fontFamily: 'Arial, sans-serif', fontSize: '11px' }}>
+    <div style={{ minHeight: '100vh', ...backgroundStyle, fontFamily: 'Arial, sans-serif', fontSize: '14px' }}>
       {songUrl && <audio ref={audioRef} src={songUrl} />}
       
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '10px' }}>
-        <table width="100%" cellPadding={0} cellSpacing={10}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+        <table width="100%" cellPadding={0} cellSpacing={20}>
           <tbody>
             <tr>
-              <td width={300} style={{ verticalAlign: 'top' }}>
+              <td width={400} style={{ verticalAlign: 'top' }}>
                 
                 {/* Main Profile */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #CC99FF', backgroundColor: '#DDBBFF', marginBottom: '10px' }}>
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.profileHeader}`, backgroundColor: currentTheme.profileBg, marginBottom: '15px' }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: '#9966CC', color: 'white', padding: '3px 8px', fontSize: '11px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.profileHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
                         {profile.name}
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: '8px' }}>
-                        <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+                      <td style={{ padding: '15px' }}>
+                        <div style={{ textAlign: 'center', marginBottom: '12px' }}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img 
-                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='160' viewBox='0 0 120 160'%3E%3Crect width='120' height='160' fill='white' stroke='%23333' stroke-width='1'/%3E%3Ctext x='60' y='85' text-anchor='middle' dominant-baseline='middle' font-family='Arial' font-size='10' fill='%23333'%3E[Your Photo]%3C/text%3E%3C/svg%3E"
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='200' viewBox='0 0 160 200'%3E%3Crect width='160' height='200' fill='white' stroke='%23333' stroke-width='1'/%3E%3Ctext x='80' y='105' text-anchor='middle' dominant-baseline='middle' font-family='Arial' font-size='12' fill='%23333'%3E[Your Photo]%3C/text%3E%3C/svg%3E"
                             alt="Profile"
                             style={{ border: '1px solid black' }}
                           />
-                          <div style={{ fontSize: '9px', marginTop: '3px', fontStyle: 'italic', color: '#333' }}>
+                          <div style={{ fontSize: '12px', marginTop: '6px', fontStyle: 'italic', color: '#333' }}>
                             {profile.quote.split('\n').map((line, i) => (
                               <div key={i}>{line}</div>
                             ))}
                           </div>
                         </div>
                         
-                        <div style={{ fontSize: '10px', color: '#333' }}>
-                          <div><strong>Male</strong></div>
+                        <div style={{ fontSize: '13px', color: '#333' }}>
+                          <div><strong>Female</strong></div>
                           <div><strong>{profile.age} years old</strong></div>
                           <div><strong>{profile.location.city}</strong></div>
                           <div><strong>{profile.location.state}</strong></div>
                           <div><strong>{profile.location.country}</strong></div>
-                          <div style={{ marginTop: '8px' }}>
+                          <div style={{ marginTop: '12px' }}>
                             <div><strong>Last Login:</strong></div>
-                            <div>{profile.lastLogin}</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+                              {/* Signal bars */}
+                              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px' }}>
+                                <div style={{ width: '4px', height: '6px', backgroundColor: '#00CC00', border: '1px solid #008800' }}></div>
+                                <div style={{ width: '4px', height: '8px', backgroundColor: '#00CC00', border: '1px solid #008800' }}></div>
+                                <div style={{ width: '4px', height: '6px', backgroundColor: '#00CC00', border: '1px solid #008800' }}></div>
+                              </div>
+                              {/* Person icon */}
+                              <div style={{ 
+                                width: '16px', 
+                                height: '16px', 
+                                backgroundColor: '#FF6600', 
+                                borderRadius: '50%',
+                                border: '1px solid #CC5500',
+                                position: 'relative'
+                              }}>
+                                <div style={{
+                                  width: '8px',
+                                  height: '8px',
+                                  backgroundColor: '#FF6600',
+                                  position: 'absolute',
+                                  bottom: '-4px',
+                                  left: '4px',
+                                  border: '1px solid #CC5500'
+                                }}></div>
+                              </div>
+                              {/* Online Now text */}
+                              <span style={{ 
+                                color: '#00CC00', 
+                                fontWeight: 'bold', 
+                                fontSize: '14px',
+                                textShadow: '1px 1px 0px #008800'
+                              }}>
+                                Online Now!
+                              </span>
+                            </div>
                           </div>
                         </div>
                         
-                        <div style={{ marginTop: '8px', fontSize: '9px' }}>
+                        <div style={{ marginTop: '12px', fontSize: '12px' }}>
                           <a href="#" style={{ color: '#0066CC' }}>View My:</a> 
                           <a href="#" style={{ color: '#0066CC' }}> Pics</a> | 
                           <a href="#" style={{ color: '#0066CC' }}> Videos</a>
@@ -189,39 +329,57 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                 </table>
 
                 {/* Contacting */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #CC99FF', backgroundColor: '#DDBBFF', marginBottom: '10px' }}>
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.contactHeader}`, backgroundColor: currentTheme.contactBg, marginBottom: '15px' }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: '#9966CC', color: 'white', padding: '3px 8px', fontSize: '11px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.contactHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
                         Contacting {profile.name}
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: '6px' }}>
-                        <table width="100%" style={{ fontSize: '9px' }}>
+                      <td style={{ padding: '12px' }}>
+                        <table width="100%" style={{ fontSize: '12px' }}>
                           <tbody>
                             <tr>
-                              <td style={{ paddingBottom: '2px' }}>
-                                📧 <a href="mailto:your@email.com" style={{ color: '#0066CC' }}>Send Message</a>
+                              <td style={{ paddingBottom: '4px' }}>
+                                <a href="mailto:your@email.com" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <span style={{ fontSize: '16px' }}>📧</span>
+                                  <span>Send Message</span>
+                                </a>
                               </td>
-                              <td style={{ paddingBottom: '2px' }}>
-                                📤 <a href="#" style={{ color: '#0066CC' }}>Forward to Friend</a>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td style={{ paddingBottom: '2px' }}>
-                                👤 <a href="#" style={{ color: '#0066CC' }}>Add to Friends</a>
-                              </td>
-                              <td style={{ paddingBottom: '2px' }}>
-                                ⭐ <a href="#" style={{ color: '#0066CC' }}>Add to Favorites</a>
+                              <td style={{ paddingBottom: '4px' }}>
+                                <a href="#" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <span style={{ fontSize: '16px' }}>📤</span>
+                                  <span>Forward to Friend</span>
+                                </a>
                               </td>
                             </tr>
                             <tr>
-                              <td style={{ paddingBottom: '2px' }}>
-                                💻 <a href="https://github.com/yourusername" style={{ color: '#0066CC' }}>GitHub</a>
+                              <td style={{ paddingBottom: '4px' }}>
+                                <a href="#" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <span style={{ fontSize: '16px' }}>👤</span>
+                                  <span>Add to Friends</span>
+                                </a>
                               </td>
-                              <td style={{ paddingBottom: '2px' }}>
-                                🔗 <a href="#" style={{ color: '#0066CC' }}>LinkedIn</a>
+                              <td style={{ paddingBottom: '4px' }}>
+                                <a href="#" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <span style={{ fontSize: '16px' }}>⭐</span>
+                                  <span>Add to Favorites</span>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style={{ paddingBottom: '4px' }}>
+                                <a href="https://github.com/skylarnlea" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <Image src="/icons/github.svg" alt="GitHub" width={20} height={20} style={{ display: 'inline-block' }} />
+                                  GitHub
+                                </a>
+                              </td>
+                              <td style={{ paddingBottom: '4px' }}>
+                                <a href="https://www.linkedin.com/in/skylar-lea" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <Image src="/icons/linkedin.svg" alt="LinkedIn" width={20} height={20} style={{ display: 'inline-block' }} />
+                                  LinkedIn
+                                </a>
                               </td>
                             </tr>
                           </tbody>
@@ -232,16 +390,16 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                 </table>
 
                 {/* MySpace URL */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #CC99FF', backgroundColor: '#DDBBFF', marginBottom: '10px' }}>
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.urlHeader}`, backgroundColor: currentTheme.urlBg, marginBottom: '15px' }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: '#9966CC', color: 'white', padding: '3px 8px', fontSize: '11px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.urlHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
                         DevSpace URL:
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: '6px' }}>
-                        <div style={{ fontSize: '9px' }}>
+                      <td style={{ padding: '12px' }}>
+                        <div style={{ fontSize: '12px' }}>
                           http://www.devspace.com/yourname
                         </div>
                       </td>
@@ -250,23 +408,23 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                 </table>
 
                 {/* Details */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #CC99FF', backgroundColor: '#DDBBFF' }}>
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.detailsHeader}`, backgroundColor: currentTheme.detailsBg }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: '#9966CC', color: 'white', padding: '3px 8px', fontSize: '11px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.detailsHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
                         {profile.name}&apos;s Details
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: '6px', fontSize: '9px' }}>
+                      <td style={{ padding: '12px', fontSize: '12px' }}>
                         <div><strong>Status:</strong> {profile.status}</div>
                         <div><strong>Here for:</strong> Networking</div>
                         <div><strong>Orientation:</strong> {profile.orientation}</div>
                         <div><strong>Body type:</strong> {profile.bodyType}</div>
                         <div><strong>Religion:</strong> {profile.religion}</div>
                         <div><strong>Zodiac Sign:</strong> {profile.zodiacSign}</div>
-                        <div><strong>Smoke /</strong></div>
-                        <div><strong>Drink:</strong> {profile.smoke ? 'Yes' : 'No'} / {profile.drink ? 'Yes' : 'No'}</div>
+                        <div><strong>Smoke:</strong> {profile.smoke ? 'Yes' : 'No'}</div>
+                        <div><strong>Drink:</strong> {profile.drink ? 'Yes' : 'No'}</div>
                         <div><strong>Children:</strong> {profile.children}</div>
                       </td>
                     </tr>
@@ -278,10 +436,10 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
               <td style={{ verticalAlign: 'top' }}>
                 
                 {/* Extended Network */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '1px solid #999', backgroundColor: 'white', marginBottom: '10px' }}>
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '1px solid #999', backgroundColor: 'white', marginBottom: '15px' }}>
                   <tbody>
                     <tr>
-                      <td style={{ padding: '8px', fontSize: '11px', textAlign: 'center' }}>
+                      <td style={{ padding: '12px', fontSize: '14px', textAlign: 'center' }}>
                         <strong>{profile.name} is in your extended network</strong>
                       </td>
                     </tr>
@@ -289,21 +447,21 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                 </table>
 
                 {/* Blog Entries */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #CC99FF', backgroundColor: '#DDBBFF', marginBottom: '10px' }}>
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.blogHeader}`, backgroundColor: currentTheme.blogBg, marginBottom: '15px' }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: '#9966CC', color: 'white', padding: '3px 8px', fontSize: '11px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.blogHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
                         {profile.name}&apos;s Latest Blog Entry ( <a href="#" style={{ color: 'white' }}>Subscribe to this Blog</a> )
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: '8px', fontSize: '10px' }}>
+                      <td style={{ padding: '15px', fontSize: '13px' }}>
                         {blogEntries.map((entry, index) => (
-                          <div key={index} style={{ marginBottom: '5px' }}>
+                          <div key={index} style={{ marginBottom: '8px' }}>
                             <strong>{entry.title}</strong> ( <a href={entry.link} style={{ color: '#0066CC' }}>view more</a> )
                           </div>
                         ))}
-                        <div style={{ marginTop: '8px' }}>
+                        <div style={{ marginTop: '12px' }}>
                           <a href="#" style={{ color: '#0066CC' }}>[ View All Blog Entries ]</a>
                         </div>
                       </td>
@@ -312,16 +470,16 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                 </table>
 
                 {/* Blurbs/About */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #FFAA66', backgroundColor: '#FFDDAA', marginBottom: '10px' }}>
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.blurbsHeader}`, backgroundColor: currentTheme.blurbsBg, marginBottom: '15px' }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: '#DD8844', color: 'white', padding: '3px 8px', fontSize: '11px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.blurbsHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
                         {profile.name}&apos;s Blurbs
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: '8px', fontSize: '10px' }}>
-                        <div style={{ marginBottom: '8px' }}>
+                      <td style={{ padding: '15px', fontSize: '13px' }}>
+                        <div style={{ marginBottom: '12px' }}>
                           <strong>About me:</strong><br />
                           {aboutMe}
                         </div>
@@ -336,30 +494,30 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                 </table>
 
                 {/* Friend Space */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #FFAA66', backgroundColor: '#FFDDAA' }}>
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.friendsHeader}`, backgroundColor: currentTheme.friendsBg }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: '#DD8844', color: 'white', padding: '3px 8px', fontSize: '11px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.friendsHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
                         {profile.name}&apos;s Friend Space
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: '8px' }}>
-                        <div style={{ fontSize: '10px', marginBottom: '8px' }}>
+                      <td style={{ padding: '15px' }}>
+                        <div style={{ fontSize: '13px', marginBottom: '12px' }}>
                           {profile.name} has <strong>{friendCount}</strong> friends.
                         </div>
-                        <table cellPadding={3} cellSpacing={0}>
+                        <table cellPadding={6} cellSpacing={0}>
                           <tbody>
                             <tr>
                               {Array.from({length: 4}, (_, i) => (
                                 <td key={i} style={{ textAlign: 'center' }}>
                                   {/* eslint-disable-next-line @next/next/no-img-element */}
                                   <img 
-                                    src={`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75' viewBox='0 0 75 75'%3E%3Crect width='75' height='75' fill='white' stroke='%23333'/%3E%3Ctext x='37.5' y='42' text-anchor='middle' font-family='Arial' font-size='9' fill='%23333'%3EProject ${i+1}%3C/text%3E%3C/svg%3E`}
+                                    src={`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white' stroke='%23333'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-family='Arial' font-size='12' fill='%23333'%3EProject ${i+1}%3C/text%3E%3C/svg%3E`}
                                     alt={`Project ${i+1}`}
                                     style={{ border: '1px solid black' }}
                                   />
-                                  <div style={{ fontSize: '8px', marginTop: '2px' }}>
+                                  <div style={{ fontSize: '11px', marginTop: '4px' }}>
                                     <a href="#" style={{ color: '#0066CC' }}>Project {i+1}</a>
                                   </div>
                                 </td>
@@ -370,11 +528,11 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                                 <td key={i} style={{ textAlign: 'center' }}>
                                   {/* eslint-disable-next-line @next/next/no-img-element */}
                                   <img 
-                                    src={`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75' viewBox='0 0 75 75'%3E%3Crect width='75' height='75' fill='white' stroke='%23333'/%3E%3Ctext x='37.5' y='42' text-anchor='middle' font-family='Arial' font-size='9' fill='%23333'%3EProject ${i+5}%3C/text%3E%3C/svg%3E`}
+                                    src={`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white' stroke='%23333'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-family='Arial' font-size='12' fill='%23333'%3EProject ${i+5}%3C/text%3E%3C/svg%3E`}
                                     alt={`Project ${i+5}`}
                                     style={{ border: '1px solid black' }}
                                   />
-                                  <div style={{ fontSize: '8px', marginTop: '2px' }}>
+                                  <div style={{ fontSize: '11px', marginTop: '4px' }}>
                                     <a href="#" style={{ color: '#0066CC' }}>Project {i+5}</a>
                                   </div>
                                 </td>
@@ -382,8 +540,8 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                             </tr>
                           </tbody>
                         </table>
-                        <div style={{ textAlign: 'center', marginTop: '8px' }}>
-                          <a href="#" style={{ color: '#0066CC', fontSize: '9px' }}>View All of {profile.name}&apos;s Projects</a>
+                        <div style={{ textAlign: 'center', marginTop: '12px' }}>
+                          <a href="#" style={{ color: '#0066CC', fontSize: '12px' }}>View All of {profile.name}&apos;s Projects</a>
                         </div>
                       </td>
                     </tr>
@@ -391,17 +549,17 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                 </table>
 
                 {/* Comments Section */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #CC99FF', backgroundColor: '#DDBBFF', marginTop: '10px' }}>
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.blogHeader}`, backgroundColor: currentTheme.blogBg, marginTop: '15px' }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: '#9966CC', color: 'white', padding: '3px 8px', fontSize: '11px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.blogHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
                         {profile.name}&apos;s Friend Comments
                         (Displaying 3 of 47 comments) ( <a href="#" style={{ color: 'white' }}>View All</a> | <a href="#" style={{ color: 'white' }}>Add Comment</a> )
                       </td>
                     </tr>
                     <tr>
-                      <td style={{ padding: '8px', fontSize: '10px' }}>
-                        <div style={{ marginBottom: '8px' }}>
+                      <td style={{ padding: '15px', fontSize: '13px' }}>
+                        <div style={{ marginBottom: '12px' }}>
                           <strong>TechRecruiter_Sarah</strong> | 6/1/2006 9:47 PM<br />
                           Your portfolio is amazing! Would love to discuss some opportunities.
                         </div>
@@ -410,72 +568,191 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                   </tbody>
                 </table>
 
-                {/* Music Player - Only show if songUrl is provided */}
-                {songUrl && (
-                  <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #666666', backgroundColor: '#333333', marginTop: '10px' }}>
-                    <tbody>
-                      <tr>
-                        <td style={{ backgroundColor: '#666666', color: 'white', padding: '2px 8px', fontSize: '12px', fontWeight: 'bold' }}>
-                          {profile.name}&apos;s Music
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style={{ padding: '10px' }}>
-                          <table cellPadding={0} cellSpacing={0} width="100%" style={{ backgroundColor: 'black', border: '1px solid #999' }}>
-                            <tbody>
-                              <tr>
-                                <td style={{ padding: '8px' }}>
-                                  <div style={{ marginBottom: '5px' }}>
-                                    <button 
-                                      onClick={togglePlay}
-                                      style={{ 
-                                        backgroundColor: '#666',
-                                        color: 'white', 
-                                        border: '1px solid #999',
-                                        padding: '2px 8px',
-                                        marginRight: '5px',
-                                        cursor: 'pointer',
-                                        fontSize: '10px'
-                                      }}
-                                    >
-                                      {isPlaying ? 'Pause' : 'Play'}
-                                    </button>
-                                    <span style={{ color: 'white', fontSize: '10px' }}>
-                                      {formatTime(currentTime)} / {formatTime(duration)}
-                                    </span>
-                                  </div>
-                                  
-                                  <div 
-                                    onClick={handleProgressClick}
+                {/* Music Player - Always visible with disclaimer */}
+                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #666666', backgroundColor: '#333333', marginTop: '15px' }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ backgroundColor: '#666666', color: 'white', padding: '6px 12px', fontSize: '15px', fontWeight: 'bold' }}>
+                        {profile.name}&apos;s Music
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ padding: '15px' }}>
+                        <div style={{ color: 'white', fontSize: '14px', marginBottom: '12px' }}>
+                          <div><strong>Currently Playing:</strong></div>
+                          <div>&quot;Your Favorite Coding Song&quot; - Artist Name</div>
+                        </div>
+                        
+                        <table cellPadding={0} cellSpacing={0} width="100%" style={{ backgroundColor: 'black', border: '1px solid #999' }}>
+                          <tbody>
+                            <tr>
+                              <td style={{ padding: '12px' }}>
+                                <div style={{ marginBottom: '8px' }}>
+                                  <button 
+                                    onClick={togglePlay}
                                     style={{ 
-                                      backgroundColor: '#333', 
-                                      height: '8px', 
-                                      border: '1px inset #666',
-                                      cursor: 'pointer'
+                                      backgroundColor: '#666',
+                                      color: 'white', 
+                                      border: '1px solid #999',
+                                      padding: '4px 12px',
+                                      marginRight: '8px',
+                                      cursor: 'pointer',
+                                      fontSize: '12px'
                                     }}
                                   >
-                                    <div 
-                                      style={{ 
-                                        backgroundColor: '#00FF00', 
-                                        height: '6px', 
-                                        width: `${duration ? (currentTime / duration) * 100 : 0}%`
-                                      }}
-                                    ></div>
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                )}
+                                    ▶️ Play
+                                  </button>
+                                  <button 
+                                    onClick={togglePlay}
+                                    style={{ 
+                                      backgroundColor: '#666',
+                                      color: 'white', 
+                                      border: '1px solid #999',
+                                      padding: '4px 12px',
+                                      marginRight: '8px',
+                                      cursor: 'pointer',
+                                      fontSize: '12px'
+                                    }}
+                                  >
+                                    ⏸️ Pause
+                                  </button>
+                                  <span style={{ color: 'white', fontSize: '12px' }}>
+                                    0:00 / 3:42
+                                  </span>
+                                </div>
+                                
+                                <div 
+                                  onClick={togglePlay}
+                                  style={{ 
+                                    backgroundColor: '#333', 
+                                    height: '12px', 
+                                    border: '1px inset #666',
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  <div 
+                                    style={{ 
+                                      backgroundColor: '#00FF00', 
+                                      height: '10px', 
+                                      width: '0%'
+                                    }}
+                                  ></div>
+                                </div>
+                                
+                                <div style={{ color: '#999', fontSize: '11px', marginTop: '8px', textAlign: 'center' }}>
+                                  Click to learn about music licensing! 🎵
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      {/* Legal Disclaimer Modal */}
+      {showLegalModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '30px'
+        }}>
+          <div style={{
+            backgroundColor: currentTheme.profileBg,
+            border: `3px solid ${currentTheme.profileHeader}`,
+            borderRadius: '8px',
+            maxWidth: '600px',
+            width: '100%',
+            fontFamily: 'Arial, sans-serif'
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              backgroundColor: currentTheme.profileHeader,
+              color: 'white',
+              padding: '12px 20px',
+              fontWeight: 'bold',
+              fontSize: '16px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              🎵 Music Player - Legal Notice
+              <button 
+                onClick={closeLegalModal}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'white',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  padding: '0 8px'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            
+            {/* Modal Content */}
+            <div style={{ padding: '20px', fontSize: '14px', lineHeight: '1.5' }}>
+              <div style={{ marginBottom: '16px', fontWeight: 'bold', color: currentTheme.profileHeader }}>
+                Why Can&apos;t I Embed Music on My Personal Website?
+              </div>
+              
+              <div style={{ marginBottom: '12px' }}>
+                <strong>Copyright Law:</strong> Most music is protected by copyright, meaning you need permission (and usually payment) to use it on websites, even personal ones.
+              </div>
+              
+              <div style={{ marginBottom: '12px' }}>
+                <strong>Licensing Fees:</strong> Platforms like Spotify, Apple Music, and YouTube pay millions in licensing fees to record labels. Personal sites typically can&apos;t afford these costs.
+              </div>
+              
+              <div style={{ marginBottom: '12px' }}>
+                <strong>Legal Risks:</strong> Embedding copyrighted music without permission can result in DMCA takedown notices, legal action, or hefty fines.
+              </div>
+              
+              <div style={{ marginBottom: '16px' }}>
+                <strong>Alternatives:</strong> Use royalty-free music, creative commons tracks, or simply link to official music platforms instead!
+              </div>
+              
+              <div style={{ fontSize: '12px', fontStyle: 'italic', color: '#666', textAlign: 'center' }}>
+                This MySpace clone respects copyright law and artist rights 🎨
+              </div>
+              
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <button 
+                  onClick={closeLegalModal}
+                  style={{
+                    backgroundColor: currentTheme.profileHeader,
+                    color: 'white',
+                    border: 'none',
+                    padding: '8px 20px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  Got it, thanks!
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
