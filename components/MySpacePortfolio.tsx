@@ -1,5 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
+import FriendsModal from './modals/FriendsModal';
+import PicsModal from './modals/PicsModal';
+import VideosModal from './modals/VideosModal';
+import LegalModal from './modals/LegalModal';
 
 interface ProfileData {
   name: string;
@@ -39,12 +43,12 @@ interface MySpacePortfolioProps {
 
 const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
   profileData = {},
-  songUrl = "",
+  // songUrl intentionally unused for now
   backgroundImage = "",
   theme = 'pink',
   blogEntries = [
-    { title: "My Latest React Project", link: "#" },
-    { title: "Learning TypeScript", link: "#" },
+    { title: "My Favorite Coffee Shop", link: "#" },
+    { title: "Learning C#", link: "#" },
     { title: "5 Tips for Better Code Reviews", link: "#" },
     { title: "Building This MySpace Clone", link: "#" },
     { title: "Why I Love Coding", link: "#" }
@@ -53,11 +57,50 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
   whoIdLikeToMeet = "Fellow developers, tech enthusiasts, and creative collaborators...",
   friendCount = 42
 }) => {
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [currentTime, setCurrentTime] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
   const [showLegalModal, setShowLegalModal] = useState<boolean>(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [copied, setCopied] = useState<boolean>(false);
+  const [bookmarkHint, setBookmarkHint] = useState<string>('');
+  const [friendHint, setFriendHint] = useState<string>('');
+  const [showFriendsModal, setShowFriendsModal] = useState<boolean>(false);
+  const [showPicsModal, setShowPicsModal] = useState<boolean>(false);
+  const [showVideosModal, setShowVideosModal] = useState<boolean>(false);
+
+  // Copy current page URL to clipboard (with fallback for non-secure contexts)
+  const handleCopyCurrentUrl = async (e?: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>): Promise<void> => {
+    if (e) e.preventDefault();
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    const url = window.location.href;
+
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        // Fallback: create a temporary textarea to copy from
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'absolute';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        const selection = document.getSelection();
+        const selected = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        if (selected && selection) {
+          selection.removeAllRanges();
+          selection.addRange(selected);
+        }
+      }
+      setCopied(true);
+    } catch (err) {
+      // Silently fail; could also surface an error state
+      console.error('Failed to copy URL:', err);
+    } finally {
+      // Reset copied message after a short delay
+      window.setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   // Pastel color themes
   const themes = {
@@ -169,11 +212,11 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
 
   // Default profile data
   const defaultProfile: ProfileData = {
-    name: "Your Developer Name",
-    age: 28,
+    name: "Skylar Lea",
+    age: 29,
     location: {
-      city: "SAN FRANCISCO",
-      state: "CALIFORNIA", 
+      city: "DALLAS",
+      state: "TEXAS", 
       country: "United States"
     },
     status: "Available for hire",
@@ -183,28 +226,12 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
     zodiacSign: "Programmer",
     smoke: false,
     drink: false,
-    children: "Maybe some code babies",
+    children: "Maybe some code babies...and one real one",
     quote: "Building the future,\none line at a time",
     lastLogin: "Online Now!"
   };
 
   const profile = { ...defaultProfile, ...profileData };
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio && songUrl) {
-      const updateTime = () => setCurrentTime(audio.currentTime);
-      const updateDuration = () => setDuration(audio.duration);
-      
-      audio.addEventListener('timeupdate', updateTime);
-      audio.addEventListener('loadedmetadata', updateDuration);
-      
-      return () => {
-        audio.removeEventListener('timeupdate', updateTime);
-        audio.removeEventListener('loadedmetadata', updateDuration);
-      };
-    }
-  }, [songUrl]);
 
   const togglePlay = (): void => {
     // Show legal disclaimer instead of playing music
@@ -215,22 +242,159 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
     setShowLegalModal(false);
   };
 
-  const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>): void => {
-    const audio = audioRef.current;
-    if (audio && duration) {
-      const clickX = e.nativeEvent.offsetX;
-      const width = (e.target as HTMLElement).offsetWidth;
-      const newTime = (clickX / width) * duration;
-      audio.currentTime = newTime;
-      setCurrentTime(newTime);
+  // Open/close Pics modal
+  const openPicsModal = (e?: React.MouseEvent<HTMLAnchorElement>): void => {
+    if (e) e.preventDefault();
+    setShowPicsModal(true);
+  };
+  const closePicsModal = (): void => {
+    setShowPicsModal(false);
+  };
+
+  // Open/close Videos modal
+  const openVideosModal = (e?: React.MouseEvent<HTMLAnchorElement>): void => {
+    if (e) e.preventDefault();
+    setShowVideosModal(true);
+  };
+  const closeVideosModal = (): void => {
+    setShowVideosModal(false);
+  };
+
+  // Open/close Friends modal
+  const openFriendsModal = (e?: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>): void => {
+    if (e) e.preventDefault();
+    setShowFriendsModal(true);
+  };
+  const closeFriendsModal = (): void => {
+    setShowFriendsModal(false);
+    setFriendHint('');
+  };
+
+  // Helper: copy text to clipboard with fallback
+  const copyText = async (text: string): Promise<boolean> => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+      // Fallback
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      const success = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return success;
+    } catch {
+      return false;
     }
   };
 
-  const formatTime = (time: number): string => {
-    if (isNaN(time)) return "0:00";
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  // Modal actions
+  const handleDownloadVCard = (): void => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+    const fullName = profile.name || 'My Friend';
+    const parts = fullName.trim().split(' ').filter(Boolean);
+    const firstName = parts[0] || '';
+    const lastName = parts.length > 1 ? parts[parts.length - 1] : '';
+    const middleName = parts.length > 2 ? parts.slice(1, -1).join(' ') : '';
+
+    const siteUrl = window.location.href;
+    const email = 'skyniclea@gmail.com';
+    const note = profile.status ? `Status: ${profile.status}` : '';
+
+    const vcard = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      `FN:${fullName}`,
+      `N:${lastName};${firstName};${middleName};;`,
+      `EMAIL:${email}`,
+      `URL:${siteUrl}`,
+      note ? `NOTE:${note}` : undefined,
+      'END:VCARD'
+    ].filter(Boolean).join('\n');
+
+    try {
+      const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${fullName.toLowerCase().replace(/\s+/g, '-')}.vcf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setFriendHint('Contact card downloaded');
+    } catch (err) {
+      console.error('Failed to generate vCard:', err);
+      setFriendHint('Unable to download contact');
+    } finally {
+      window.setTimeout(() => setFriendHint(''), 2500);
+    }
+  };
+
+  const handleCopyEmail = async (): Promise<void> => {
+    const ok = await copyText('skyniclea@gmail.com');
+    setFriendHint(ok ? 'Email copied' : 'Copy failed');
+    window.setTimeout(() => setFriendHint(''), 2000);
+  };
+
+  const handleCopyPageUrl = async (): Promise<void> => {
+    if (typeof window === 'undefined') return;
+    const ok = await copyText(window.location.href);
+    setFriendHint(ok ? 'URL copied' : 'Copy failed');
+    window.setTimeout(() => setFriendHint(''), 2000);
+  };
+
+  // Show browser-appropriate instructions to bookmark the page
+  const handleAddToFavorites = (e?: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>): void => {
+    if (e) e.preventDefault();
+    if (typeof window === 'undefined') return;
+
+    const url = window.location.href;
+    const title = document?.title || 'This page';
+
+    // Legacy attempts (mostly not supported in modern browsers)
+    const w = window as unknown as {
+      external?: { AddFavorite?: (url: string, title: string) => void };
+      sidebar?: { addPanel?: (title: string, url: string, panel?: string) => void };
+    };
+    // IE
+    if (w.external?.AddFavorite) {
+      try {
+        w.external.AddFavorite(url, title);
+        return;
+      } catch {}
+    }
+    // Old Firefox
+    if (w.sidebar?.addPanel) {
+      try {
+        w.sidebar.addPanel(title, url, '');
+        return;
+      } catch {}
+    }
+
+    // Fallback: show a small hint with the right shortcut/instructions
+    const isMac = navigator.platform.toUpperCase().includes('MAC');
+    const ua = navigator.userAgent || '';
+  const winObj = window as unknown as Record<string, unknown>;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) && !('MSStream' in winObj);
+    const isAndroid = /Android/.test(ua);
+
+    let message = '';
+    if (isIOS) {
+      message = "On iOS: Tap the Share button, then 'Add to Home Screen' or 'Add Bookmark'.";
+    } else if (isAndroid) {
+      message = "On Android: Open the browser menu (⋮) and choose 'Add to Home screen' or 'Bookmark'.";
+    } else {
+      message = `Press ${isMac ? '⌘' : 'Ctrl'}+D to bookmark this page.`;
+    }
+    setBookmarkHint(message);
+    window.setTimeout(() => setBookmarkHint(''), 4000);
   };
 
   const backgroundStyle: React.CSSProperties = backgroundImage 
@@ -239,7 +403,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
 
   return (
     <div style={{ minHeight: '100vh', ...backgroundStyle, fontFamily: 'Arial, sans-serif', fontSize: '14px' }}>
-      {songUrl && <audio ref={audioRef} src={songUrl} />}
       
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
         <table width="100%" cellPadding={0} cellSpacing={20}>
@@ -358,8 +521,8 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                         
                         <div style={{ marginTop: '12px', fontSize: '12px' }}>
                           <a href="#" style={{ color: '#0066CC' }}>View My:</a> 
-                          <a href="#" style={{ color: '#0066CC' }}> Pics</a> | 
-                          <a href="#" style={{ color: '#0066CC' }}> Videos</a>
+                          <a href="#pics" onClick={openPicsModal} style={{ color: '#0066CC' }}> Pics</a> | 
+                          <a href="#videos" onClick={openVideosModal} style={{ color: '#0066CC' }}> Videos</a>
                         </div>
                       </td>
                     </tr>
@@ -380,29 +543,57 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                           <tbody>
                             <tr>
                               <td style={{ paddingBottom: '4px' }}>
-                                <a href="mailto:your@email.com" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <a href="mailto:skyniclea@gmail.com" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                   <span style={{ fontSize: '16px' }}>📧</span>
                                   <span>Send Message</span>
                                 </a>
                               </td>
                               <td style={{ paddingBottom: '4px' }}>
-                                <a href="#" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                  <span style={{ fontSize: '16px' }}>📤</span>
+                                <a
+                                  href="#"
+                                  onClick={handleCopyCurrentUrl}
+                                  title="Copy page URL to clipboard"
+                                  style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                >
+                                  <span style={{ fontSize: '16px' }} aria-hidden>📤</span>
                                   <span>Forward to Friend</span>
+                                  {copied && (
+                                    <span style={{ marginLeft: '6px', color: '#0a8a0a', fontSize: '11px', fontWeight: 'bold' }}>
+                                      Copied!
+                                    </span>
+                                  )}
                                 </a>
                               </td>
                             </tr>
                             <tr>
                               <td style={{ paddingBottom: '4px' }}>
-                                <a href="#" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <a
+                                  href="#"
+                                  onClick={openFriendsModal}
+                                  title="Connect options"
+                                  style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                >
                                   <span style={{ fontSize: '16px' }}>👤</span>
                                   <span>Add to Friends</span>
                                 </a>
                               </td>
                               <td style={{ paddingBottom: '4px' }}>
-                                <a href="#" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <a
+                                  href="#"
+                                  onClick={handleAddToFavorites}
+                                  title="Bookmark this page"
+                                  style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                >
                                   <span style={{ fontSize: '16px' }}>⭐</span>
                                   <span>Add to Favorites</span>
+                                  {bookmarkHint && (
+                                    <span
+                                      aria-live="polite"
+                                      style={{ marginLeft: '6px', color: '#0a8a0a', fontSize: '11px', fontWeight: 'bold' }}
+                                    >
+                                      {bookmarkHint}
+                                    </span>
+                                  )}
                                 </a>
                               </td>
                             </tr>
@@ -438,7 +629,7 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                     <tr>
                       <td style={{ padding: '12px' }}>
                         <div style={{ fontSize: '12px' }}>
-                          http://www.devspace.com/yourname
+                          http://www.devspace.com/skylarlea
                         </div>
                       </td>
                     </tr>
@@ -694,103 +885,39 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
         </table>
       </div>
 
-      {/* Legal Disclaimer Modal */}
-      {showLegalModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          padding: '30px'
-        }}>
-          <div style={{
-            backgroundColor: currentTheme.profileBg,
-            border: `3px solid ${currentTheme.profileHeader}`,
-            borderRadius: '8px',
-            maxWidth: '600px',
-            width: '100%',
-            fontFamily: 'Arial, sans-serif'
-          }}>
-            {/* Modal Header */}
-            <div style={{
-              backgroundColor: currentTheme.profileHeader,
-              color: 'white',
-              padding: '12px 20px',
-              fontWeight: 'bold',
-              fontSize: '16px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              🎵 Music Player - Legal Notice
-              <button 
-                onClick={closeLegalModal}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'white',
-                  fontSize: '20px',
-                  cursor: 'pointer',
-                  padding: '0 8px'
-                }}
-              >
-                ✕
-              </button>
-            </div>
-            
-            {/* Modal Content */}
-            <div style={{ padding: '20px', fontSize: '14px', lineHeight: '1.5' }}>
-              <div style={{ marginBottom: '16px', fontWeight: 'bold', color: currentTheme.profileHeader }}>
-                Why Can&apos;t I Embed Music on My Personal Website?
-              </div>
-              
-              <div style={{ marginBottom: '12px' }}>
-                <strong>Copyright Law:</strong> Most music is protected by copyright, meaning you need permission (and usually payment) to use it on websites, even personal ones.
-              </div>
-              
-              <div style={{ marginBottom: '12px' }}>
-                <strong>Licensing Fees:</strong> Platforms like Spotify, Apple Music, and YouTube pay millions in licensing fees to record labels. Personal sites typically can&apos;t afford these costs.
-              </div>
-              
-              <div style={{ marginBottom: '12px' }}>
-                <strong>Legal Risks:</strong> Embedding copyrighted music without permission can result in DMCA takedown notices, legal action, or hefty fines.
-              </div>
-              
-              <div style={{ marginBottom: '16px' }}>
-                <strong>Alternatives:</strong> Use royalty-free music, creative commons tracks, or simply link to official music platforms instead!
-              </div>
-              
-              <div style={{ fontSize: '12px', fontStyle: 'italic', color: '#666', textAlign: 'center' }}>
-                This MySpace clone respects copyright law and artist rights 🎨
-              </div>
-              
-              <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                <button 
-                  onClick={closeLegalModal}
-                  style={{
-                    backgroundColor: currentTheme.profileHeader,
-                    color: 'white',
-                    border: 'none',
-                    padding: '8px 20px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  Got it, thanks!
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modals */}
+      <FriendsModal
+        isOpen={showFriendsModal}
+        onClose={closeFriendsModal}
+        profileName={profile.name}
+        headerBgColor={currentTheme.profileHeader}
+        contentBgColor={currentTheme.profileBg}
+        friendHint={friendHint}
+        onDownloadVCard={handleDownloadVCard}
+        onCopyEmail={handleCopyEmail}
+        onCopyPageUrl={handleCopyPageUrl}
+      />
+
+      <PicsModal
+        isOpen={showPicsModal}
+        onClose={closePicsModal}
+        headerBgColor={currentTheme.detailsHeader}
+        contentBgColor={currentTheme.detailsBg}
+      />
+
+      <VideosModal
+        isOpen={showVideosModal}
+        onClose={closeVideosModal}
+        headerBgColor={currentTheme.blogHeader}
+        contentBgColor={currentTheme.blogBg}
+      />
+
+      <LegalModal
+        isOpen={showLegalModal}
+        onClose={closeLegalModal}
+        headerBgColor={currentTheme.profileHeader}
+        contentBgColor={currentTheme.profileBg}
+      />
     </div>
   );
 };
