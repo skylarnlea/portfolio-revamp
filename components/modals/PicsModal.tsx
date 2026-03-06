@@ -8,6 +8,33 @@ interface PicsModalProps {
   contentBgColor: string;
 }
 
+const skillCategories = [
+  {
+    label: 'Frontend',
+    skills: ['React', 'TypeScript', 'JavaScript', 'Next.js', 'Tailwind CSS', 'HTML/CSS']
+  },
+  {
+    label: 'Backend',
+    skills: ['Node.js', 'Express', 'PostgreSQL', 'RESTful APIs', 'Prisma']
+  },
+  {
+    label: 'Cloud & DevOps',
+    skills: ['GCP', 'Firebase', 'Firestore', 'Cloud Build', 'Cloud Run', 'Cloud Storage', 'CI/CD']
+  },
+  {
+    label: 'AI/ML',
+    skills: ['Vertex AI', 'Gemini', 'OpenAI', 'Claude', 'RAG', 'WebSocket', 'ElevenLabs']
+  },
+  {
+    label: 'Testing & Tools',
+    skills: ['Mocha', 'Chai', 'Jest', 'Git', 'VS Code', 'Postman', 'Insomnia']
+  },
+  {
+    label: 'Currently Learning',
+    skills: ['Python', 'C#', '.NET']
+  }
+];
+
 const PicsModal: React.FC<PicsModalProps> = ({
   isOpen,
   onClose,
@@ -18,49 +45,33 @@ const PicsModal: React.FC<PicsModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Pics — Skills & Tools"
+      title="Skills & Tools"
       headerBgColor={headerBgColor}
       contentBgColor={contentBgColor}
-      maxWidth="700px"
-      ariaLabel="Skills and Tools Gallery"
+      maxWidth="560px"
+      ariaLabel="Skills and Tools"
     >
-      <div style={{ fontSize: '12px', marginBottom: '10px' }}>
-        Snapshots of tech I use: UI states, components, and quick diagrams.
-      </div>
-      <table cellPadding={6} cellSpacing={0} width="100%">
-        <tbody>
-          <tr>
-            {['React', 'TypeScript', 'Next.js', 'Node.js'].map((skill, i) => (
-              <td key={i} style={{ textAlign: 'center' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='90' viewBox='0 0 130 90'%3E%3Crect width='130' height='90' fill='white' stroke='%23999'/%3E%3Ctext x='65' y='50' text-anchor='middle' font-family='Arial' font-size='14' fill='%23333'%3E${encodeURIComponent(skill)}%3C/text%3E%3C/svg%3E`}
-                  alt={`${skill} example`}
-                  style={{ border: '1px solid black' }}
-                />
-                <div style={{ fontSize: '11px', marginTop: '4px' }}>
-                  <a href="#" style={{ color: '#0066CC' }}>{skill} highlight</a>
-                </div>
-              </td>
+      {skillCategories.map((cat, i) => (
+        <div key={i} style={{ marginBottom: i < skillCategories.length - 1 ? '14px' : 0 }}>
+          <div style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '6px', color: headerBgColor }}>
+            {cat.label}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            {cat.skills.map((skill, j) => (
+              <span key={j} style={{
+                display: 'inline-block',
+                fontSize: '12px',
+                padding: '4px 10px',
+                backgroundColor: 'white',
+                border: `1px solid ${headerBgColor}`,
+                color: '#333'
+              }}>
+                {skill}
+              </span>
             ))}
-          </tr>
-          <tr>
-            {['CSS/SCSS', 'Testing', 'GraphQL', 'Docker'].map((skill, i) => (
-              <td key={i} style={{ textAlign: 'center' }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='130' height='90' viewBox='0 0 130 90'%3E%3Crect width='130' height='90' fill='white' stroke='%23999'/%3E%3Ctext x='65' y='50' text-anchor='middle' font-family='Arial' font-size='12' fill='%23333'%3E${encodeURIComponent(skill)}%3C/text%3E%3C/svg%3E`}
-                  alt={`${skill} example`}
-                  style={{ border: '1px solid black' }}
-                />
-                <div style={{ fontSize: '11px', marginTop: '4px' }}>
-                  <a href="#" style={{ color: '#0066CC' }}>{skill} highlight</a>
-                </div>
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
+          </div>
+        </div>
+      ))}
     </Modal>
   );
 };

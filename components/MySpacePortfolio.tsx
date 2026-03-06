@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import FriendsModal from './modals/FriendsModal';
 import PicsModal from './modals/PicsModal';
-import VideosModal from './modals/VideosModal';
-import LegalModal from './modals/LegalModal';
 
 interface ProfileData {
   name: string;
@@ -22,84 +20,45 @@ interface ProfileData {
   drink: boolean;
   children: string;
   quote: string;
-  lastLogin: string;
 }
 
-interface BlogEntry {
-  title: string;
-  link: string;
+interface Project {
+  name: string;
+  description: string;
+  tech: string[];
+  type: string;
+  image?: string;
 }
 
 interface MySpacePortfolioProps {
   profileData?: Partial<ProfileData>;
-  songUrl?: string;
   backgroundImage?: string;
-  blogEntries?: BlogEntry[];
   aboutMe?: string;
-  whoIdLikeToMeet?: string;
-  friendCount?: number;
+  projects?: Project[];
   theme?: 'pink' | 'blue' | 'green' | 'purple' | 'peach' | 'lavender';
 }
 
 const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
   profileData = {},
-  // songUrl intentionally unused for now
   backgroundImage = "",
   theme = 'pink',
-  blogEntries = [
-    { title: "My Favorite Coffee Shop", link: "#" },
-    { title: "Learning C#", link: "#" },
-    { title: "5 Tips for Better Code Reviews", link: "#" },
-    { title: "Building This MySpace Clone", link: "#" },
-    { title: "Why I Love Coding", link: "#" }
-  ],
   aboutMe = "Add your developer story here...",
-  whoIdLikeToMeet = "Fellow developers, tech enthusiasts, and creative collaborators...",
-  friendCount = 42
+  projects = []
 }) => {
-  const [showLegalModal, setShowLegalModal] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [bookmarkHint, setBookmarkHint] = useState<string>('');
   const [friendHint, setFriendHint] = useState<string>('');
   const [showFriendsModal, setShowFriendsModal] = useState<boolean>(false);
   const [showPicsModal, setShowPicsModal] = useState<boolean>(false);
-  const [showVideosModal, setShowVideosModal] = useState<boolean>(false);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
-  // Copy current page URL to clipboard (with fallback for non-secure contexts)
+  // Copy current page URL to clipboard
   const handleCopyCurrentUrl = async (e?: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>): Promise<void> => {
     if (e) e.preventDefault();
-    if (typeof window === 'undefined' || typeof document === 'undefined') return;
-    const url = window.location.href;
-
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(url);
-      } else {
-        // Fallback: create a temporary textarea to copy from
-        const textarea = document.createElement('textarea');
-        textarea.value = url;
-        textarea.setAttribute('readonly', '');
-        textarea.style.position = 'absolute';
-        textarea.style.left = '-9999px';
-        document.body.appendChild(textarea);
-        const selection = document.getSelection();
-        const selected = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-        if (selected && selection) {
-          selection.removeAllRanges();
-          selection.addRange(selected);
-        }
-      }
-      setCopied(true);
-    } catch (err) {
-      // Silently fail; could also surface an error state
-      console.error('Failed to copy URL:', err);
-    } finally {
-      // Reset copied message after a short delay
-      window.setTimeout(() => setCopied(false), 2000);
-    }
+    if (typeof window === 'undefined') return;
+    const ok = await copyText(window.location.href);
+    if (ok) setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
   };
 
   // Pastel color themes
@@ -114,8 +73,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
       urlHeader: '#9966CC',
       detailsBg: '#DDBBFF',
       detailsHeader: '#9966CC',
-      blogBg: '#DDBBFF',
-      blogHeader: '#9966CC',
       blurbsBg: '#FFDDAA',
       blurbsHeader: '#DD8844',
       friendsBg: '#FFDDAA',
@@ -131,8 +88,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
       urlHeader: '#4D94FF',
       detailsBg: '#B3D9FF',
       detailsHeader: '#4D94FF',
-      blogBg: '#B3D9FF',
-      blogHeader: '#4D94FF',
       blurbsBg: '#D4EDDA',
       blurbsHeader: '#6C9F7F',
       friendsBg: '#D4EDDA',
@@ -148,8 +103,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
       urlHeader: '#6C9F7F',
       detailsBg: '#C3E6CB',
       detailsHeader: '#6C9F7F',
-      blogBg: '#C3E6CB',
-      blogHeader: '#6C9F7F',
       blurbsBg: '#FFE4B3',
       blurbsHeader: '#D4A574',
       friendsBg: '#FFE4B3',
@@ -165,8 +118,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
       urlHeader: '#8A67FF',
       detailsBg: '#D9CCFF',
       detailsHeader: '#8A67FF',
-      blogBg: '#D9CCFF',
-      blogHeader: '#8A67FF',
       blurbsBg: '#FFD9E6',
       blurbsHeader: '#E673A3',
       friendsBg: '#FFD9E6',
@@ -182,8 +133,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
       urlHeader: '#E6905A',
       detailsBg: '#FFD9B3',
       detailsHeader: '#E6905A',
-      blogBg: '#FFD9B3',
-      blogHeader: '#E6905A',
       blurbsBg: '#E6F3E6',
       blurbsHeader: '#7BB37B',
       friendsBg: '#E6F3E6',
@@ -199,8 +148,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
       urlHeader: '#B366FF',
       detailsBg: '#E6CCFF',
       detailsHeader: '#B366FF',
-      blogBg: '#E6CCFF',
-      blogHeader: '#B366FF',
       blurbsBg: '#FFF0E6',
       blurbsHeader: '#E6B380',
       friendsBg: '#FFF0E6',
@@ -221,26 +168,16 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
     },
     status: "Available for hire",
     orientation: "Full-Stack",
-    bodyType: "5&apos; 10&quot;",
+    bodyType: "5' 10\"",
     religion: "Open Source",
     zodiacSign: "Programmer",
     smoke: false,
     drink: false,
     children: "Maybe some code babies...and one real one",
-    quote: "Building the future,\none line at a time",
-    lastLogin: "Online Now!"
+    quote: "Building the future,\none line at a time"
   };
 
   const profile = { ...defaultProfile, ...profileData };
-
-  const togglePlay = (): void => {
-    // Show legal disclaimer instead of playing music
-    setShowLegalModal(true);
-  };
-
-  const closeLegalModal = (): void => {
-    setShowLegalModal(false);
-  };
 
   // Open/close Pics modal
   const openPicsModal = (e?: React.MouseEvent<HTMLAnchorElement>): void => {
@@ -249,15 +186,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
   };
   const closePicsModal = (): void => {
     setShowPicsModal(false);
-  };
-
-  // Open/close Videos modal
-  const openVideosModal = (e?: React.MouseEvent<HTMLAnchorElement>): void => {
-    if (e) e.preventDefault();
-    setShowVideosModal(true);
-  };
-  const closeVideosModal = (): void => {
-    setShowVideosModal(false);
   };
 
   // Open/close Friends modal
@@ -381,8 +309,8 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
     // Fallback: show a small hint with the right shortcut/instructions
     const isMac = navigator.platform.toUpperCase().includes('MAC');
     const ua = navigator.userAgent || '';
-  const winObj = window as unknown as Record<string, unknown>;
-  const isIOS = /iPad|iPhone|iPod/.test(ua) && !('MSStream' in winObj);
+    const winObj = window as unknown as Record<string, unknown>;
+    const isIOS = /iPad|iPhone|iPod/.test(ua) && !('MSStream' in winObj);
     const isAndroid = /Android/.test(ua);
 
     let message = '';
@@ -405,7 +333,7 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
     <div style={{ minHeight: '100vh', ...backgroundStyle, fontFamily: 'Arial, sans-serif', fontSize: '14px' }}>
       
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-        <table width="100%" cellPadding={0} cellSpacing={20}>
+        <table width="100%" cellPadding={0} style={{ borderCollapse: 'separate', borderSpacing: '20px 0' }}>
           <tbody>
             <tr>
               <td width={400} style={{ verticalAlign: 'top' }}>
@@ -414,13 +342,13 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                 <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.profileHeader}`, backgroundColor: currentTheme.profileBg, marginBottom: '15px' }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: currentTheme.profileHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.profileHeader, color: 'white', padding: '8px 15px', fontSize: '14px', fontWeight: 'bold' }}>
                         {profile.name}
                       </td>
                     </tr>
                     <tr>
                       <td style={{ padding: '15px' }}>
-                        <div style={{ textAlign: 'center', marginBottom: '12px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '12px' }}>
                           <Image 
                             src="/images/profilephoto.jpg"
                             alt="Profile Photo"
@@ -520,9 +448,8 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                         </div>
                         
                         <div style={{ marginTop: '12px', fontSize: '12px' }}>
-                          <a href="#" style={{ color: '#0066CC' }}>View My:</a> 
-                          <a href="#pics" onClick={openPicsModal} style={{ color: '#0066CC' }}> Pics</a> | 
-                          <a href="#videos" onClick={openVideosModal} style={{ color: '#0066CC' }}> Videos</a>
+                          <span style={{ color: '#333' }}>View My:</span>{' '}
+                          <a href="#pics" onClick={openPicsModal} style={{ color: '#0066CC' }}>Skills &amp; Tools</a>
                         </div>
                       </td>
                     </tr>
@@ -533,22 +460,22 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                 <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.contactHeader}`, backgroundColor: currentTheme.contactBg, marginBottom: '15px' }}>
                   <tbody>
                     <tr>
-                      <td style={{ backgroundColor: currentTheme.contactHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
+                      <td style={{ backgroundColor: currentTheme.contactHeader, color: 'white', padding: '8px 15px', fontSize: '14px', fontWeight: 'bold' }}>
                         Contacting {profile.name}
                       </td>
                     </tr>
                     <tr>
                       <td style={{ padding: '12px' }}>
-                        <table width="100%" style={{ fontSize: '12px' }}>
+                        <table width="100%" style={{ fontSize: '12px', tableLayout: 'fixed' }}>
                           <tbody>
                             <tr>
-                              <td style={{ paddingBottom: '4px' }}>
+                              <td width="50%" style={{ paddingBottom: '8px' }}>
                                 <a href="mailto:skyniclea@gmail.com" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                   <span style={{ fontSize: '16px' }}>📧</span>
                                   <span>Send Message</span>
                                 </a>
                               </td>
-                              <td style={{ paddingBottom: '4px' }}>
+                              <td width="50%" style={{ paddingBottom: '8px' }}>
                                 <a
                                   href="#"
                                   onClick={handleCopyCurrentUrl}
@@ -566,7 +493,7 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                               </td>
                             </tr>
                             <tr>
-                              <td style={{ paddingBottom: '4px' }}>
+                              <td width="50%" style={{ paddingBottom: '8px' }}>
                                 <a
                                   href="#"
                                   onClick={openFriendsModal}
@@ -577,7 +504,7 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                                   <span>Add to Friends</span>
                                 </a>
                               </td>
-                              <td style={{ paddingBottom: '4px' }}>
+                              <td width="50%" style={{ paddingBottom: '8px' }}>
                                 <a
                                   href="#"
                                   onClick={handleAddToFavorites}
@@ -598,14 +525,14 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                               </td>
                             </tr>
                             <tr>
-                              <td style={{ paddingBottom: '4px' }}>
-                                <a href="https://github.com/skylarnlea" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <td width="50%" style={{ paddingBottom: '4px' }}>
+                                <a href="https://github.com/skylarnlea" target="_blank" rel="noopener noreferrer" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                   <Image src="/icons/github.svg" alt="GitHub" width={20} height={20} style={{ display: 'inline-block' }} />
                                   GitHub
                                 </a>
                               </td>
-                              <td style={{ paddingBottom: '4px' }}>
-                                <a href="https://www.linkedin.com/in/skylar-lea" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <td width="50%" style={{ paddingBottom: '4px' }}>
+                                <a href="https://www.linkedin.com/in/skylar-lea" target="_blank" rel="noopener noreferrer" style={{ color: '#0066CC', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                   <Image src="/icons/linkedin.svg" alt="LinkedIn" width={20} height={20} style={{ display: 'inline-block' }} />
                                   LinkedIn
                                 </a>
@@ -675,29 +602,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                   </tbody>
                 </table>
 
-                {/* Blog Entries */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.blogHeader}`, backgroundColor: currentTheme.blogBg, marginBottom: '15px' }}>
-                  <tbody>
-                    <tr>
-                      <td style={{ backgroundColor: currentTheme.blogHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
-                        {profile.name}&apos;s Latest Blog Entry ( <a href="#" style={{ color: 'white' }}>Subscribe to this Blog</a> )
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: '15px', fontSize: '13px' }}>
-                        {blogEntries.map((entry, index) => (
-                          <div key={index} style={{ marginBottom: '8px' }}>
-                            <strong>{entry.title}</strong> ( <a href={entry.link} style={{ color: '#0066CC' }}>view more</a> )
-                          </div>
-                        ))}
-                        <div style={{ marginTop: '12px' }}>
-                          <a href="#" style={{ color: '#0066CC' }}>[ View All Blog Entries ]</a>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
                 {/* Blurbs/About */}
                 <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.blurbsHeader}`, backgroundColor: currentTheme.blurbsBg, marginBottom: '15px' }}>
                   <tbody>
@@ -710,171 +614,74 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                       <td style={{ padding: '15px', fontSize: '13px' }}>
                         <div style={{ marginBottom: '12px' }}>
                           <strong>About me:</strong><br />
-                          {aboutMe}
-                        </div>
-                        
-                        <div>
-                          <strong>Who I&apos;d like to meet:</strong><br />
-                          {whoIdLikeToMeet}
+                          <span style={{ whiteSpace: 'pre-line' }}>{aboutMe}</span>
                         </div>
                       </td>
                     </tr>
                   </tbody>
                 </table>
 
-                {/* Friend Space */}
+                {/* Project Space */}
                 <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.friendsHeader}`, backgroundColor: currentTheme.friendsBg }}>
                   <tbody>
                     <tr>
                       <td style={{ backgroundColor: currentTheme.friendsHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
-                        {profile.name}&apos;s Friend Space
+                        {profile.name}&apos;s Project Space
                       </td>
                     </tr>
                     <tr>
                       <td style={{ padding: '15px' }}>
                         <div style={{ fontSize: '13px', marginBottom: '12px' }}>
-                          {profile.name} has <strong>{friendCount}</strong> friends.
+                          {profile.name} has worked on <strong>{projects.length}</strong> projects. <span style={{ fontSize: '11px', color: '#666' }}>(Built for private companies — source code is confidential)</span>
                         </div>
-                        <table cellPadding={6} cellSpacing={0}>
-                          <tbody>
-                            <tr>
-                              {Array.from({length: 4}, (_, i) => (
-                                <td key={i} style={{ textAlign: 'center' }}>
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img 
-                                    src={`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white' stroke='%23333'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-family='Arial' font-size='12' fill='%23333'%3EProject ${i+1}%3C/text%3E%3C/svg%3E`}
-                                    alt={`Project ${i+1}`}
-                                    style={{ border: '1px solid black' }}
-                                  />
-                                  <div style={{ fontSize: '11px', marginTop: '4px' }}>
-                                    <a href="#" style={{ color: '#0066CC' }}>Project {i+1}</a>
-                                  </div>
-                                </td>
-                              ))}
-                            </tr>
-                            <tr>
-                              {Array.from({length: 4}, (_, i) => (
-                                <td key={i} style={{ textAlign: 'center' }}>
-                                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                                  <img 
-                                    src={`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white' stroke='%23333'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-family='Arial' font-size='12' fill='%23333'%3EProject ${i+5}%3C/text%3E%3C/svg%3E`}
-                                    alt={`Project ${i+5}`}
-                                    style={{ border: '1px solid black' }}
-                                  />
-                                  <div style={{ fontSize: '11px', marginTop: '4px' }}>
-                                    <a href="#" style={{ color: '#0066CC' }}>Project {i+5}</a>
-                                  </div>
-                                </td>
-                              ))}
-                            </tr>
-                          </tbody>
-                        </table>
-                        <div style={{ textAlign: 'center', marginTop: '12px' }}>
-                          <a href="#" style={{ color: '#0066CC', fontSize: '12px' }}>View All of {profile.name}&apos;s Projects</a>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* Comments Section */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.blogHeader}`, backgroundColor: currentTheme.blogBg, marginTop: '15px' }}>
-                  <tbody>
-                    <tr>
-                      <td style={{ backgroundColor: currentTheme.blogHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
-                        {profile.name}&apos;s Friend Comments
-                        (Displaying 3 of 47 comments) ( <a href="#" style={{ color: 'white' }}>View All</a> | <a href="#" style={{ color: 'white' }}>Add Comment</a> )
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: '15px', fontSize: '13px' }}>
-                        <div style={{ marginBottom: '12px' }}>
-                          <strong>TechRecruiter_Sarah</strong> | 6/1/2006 9:47 PM<br />
-                          Your portfolio is amazing! Would love to discuss some opportunities.
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* Music Player - Always visible with disclaimer */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '2px solid #666666', backgroundColor: '#333333', marginTop: '15px' }}>
-                  <tbody>
-                    <tr>
-                      <td style={{ backgroundColor: '#666666', color: 'white', padding: '6px 12px', fontSize: '15px', fontWeight: 'bold' }}>
-                        {profile.name}&apos;s Music
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: '15px' }}>
-                        <div style={{ color: 'white', fontSize: '14px', marginBottom: '12px' }}>
-                          <div><strong>Currently Playing:</strong></div>
-                          <div>&quot;Your Favorite Coding Song&quot; - Artist Name</div>
-                        </div>
-                        
-                        <table cellPadding={0} cellSpacing={0} width="100%" style={{ backgroundColor: 'black', border: '1px solid #999' }}>
-                          <tbody>
-                            <tr>
-                              <td style={{ padding: '12px' }}>
-                                <div style={{ marginBottom: '8px' }}>
-                                  <button 
-                                    onClick={togglePlay}
-                                    style={{ 
-                                      backgroundColor: '#666',
-                                      color: 'white', 
-                                      border: '1px solid #999',
-                                      padding: '4px 12px',
-                                      marginRight: '8px',
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                          {projects.map((project, i) => (
+                            <div key={i} style={{ border: '1px solid #999', backgroundColor: 'white', padding: '10px' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                                <div style={{ fontWeight: 'bold', fontSize: '13px', color: currentTheme.friendsHeader }}>
+                                  {project.name}
+                                </div>
+                                {project.image && (
+                                  <button
+                                    onClick={() => setLightboxImage(project.image!)}
+                                    style={{
+                                      background: 'none',
+                                      border: '1px solid #ccc',
+                                      padding: '2px 6px',
                                       cursor: 'pointer',
-                                      fontSize: '12px'
+                                      fontSize: '11px',
+                                      color: '#0066CC',
+                                      flexShrink: 0,
+                                      marginLeft: '8px'
                                     }}
+                                    title={`View ${project.name} screenshot`}
                                   >
-                                    ▶️ Play
+                                    📷 Preview
                                   </button>
-                                  <button 
-                                    onClick={togglePlay}
-                                    style={{ 
-                                      backgroundColor: '#666',
-                                      color: 'white', 
-                                      border: '1px solid #999',
-                                      padding: '4px 12px',
-                                      marginRight: '8px',
-                                      cursor: 'pointer',
-                                      fontSize: '12px'
-                                    }}
-                                  >
-                                    ⏸️ Pause
-                                  </button>
-                                  <span style={{ color: 'white', fontSize: '12px' }}>
-                                    0:00 / 3:42
+                                )}
+                              </div>
+                              <div style={{ fontSize: '11px', color: '#555', marginBottom: '6px' }}>
+                                {project.type}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#333', marginBottom: '8px' }}>
+                                {project.description}
+                              </div>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                {project.tech.map((t, j) => (
+                                  <span key={j} style={{
+                                    fontSize: '10px',
+                                    padding: '2px 6px',
+                                    backgroundColor: currentTheme.friendsBg,
+                                    border: `1px solid ${currentTheme.friendsHeader}`,
+                                    color: currentTheme.friendsHeader
+                                  }}>
+                                    {t}
                                   </span>
-                                </div>
-                                
-                                <div 
-                                  onClick={togglePlay}
-                                  style={{ 
-                                    backgroundColor: '#333', 
-                                    height: '12px', 
-                                    border: '1px inset #666',
-                                    cursor: 'pointer'
-                                  }}
-                                >
-                                  <div 
-                                    style={{ 
-                                      backgroundColor: '#00FF00', 
-                                      height: '10px', 
-                                      width: '0%'
-                                    }}
-                                  ></div>
-                                </div>
-                                
-                                <div style={{ color: '#999', fontSize: '11px', marginTop: '8px', textAlign: 'center' }}>
-                                  Click to learn about music licensing! 🎵
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </td>
                     </tr>
                   </tbody>
@@ -905,19 +712,39 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
         contentBgColor={currentTheme.detailsBg}
       />
 
-      <VideosModal
-        isOpen={showVideosModal}
-        onClose={closeVideosModal}
-        headerBgColor={currentTheme.blogHeader}
-        contentBgColor={currentTheme.blogBg}
-      />
-
-      <LegalModal
-        isOpen={showLegalModal}
-        onClose={closeLegalModal}
-        headerBgColor={currentTheme.profileHeader}
-        contentBgColor={currentTheme.profileBg}
-      />
+      {/* Image Lightbox */}
+      {lightboxImage && (
+        <div
+          onClick={() => setLightboxImage(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 2000,
+            cursor: 'pointer',
+            padding: '40px'
+          }}
+        >
+          <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh' }}>
+            <Image
+              src={lightboxImage}
+              alt="Project screenshot"
+              width={900}
+              height={600}
+              style={{ maxWidth: '100%', maxHeight: '85vh', objectFit: 'contain', border: '3px solid white' }}
+            />
+            <div style={{ color: 'white', textAlign: 'center', marginTop: '10px', fontSize: '12px' }}>
+              Click anywhere to close
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

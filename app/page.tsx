@@ -18,7 +18,7 @@ export default function Home() {
   // Your profile data
   const profileData = {
     name: "Skylar Lea",
-    age: 29,
+    age: 30,
     location: {
       city: "DALLAS",
       state: "TEXAS",
@@ -32,36 +32,52 @@ export default function Home() {
     smoke: false,
     drink: false,
     children: "Maybe some code babies...and one real one",
-    quote: "Building the future,\none line at a time",
+    quote: "Teaching AI to talk so I don't have to",
     lastLogin: "Online Now!"
   };
 
-  const blogEntries = [
-    { title: "🚀 Just Shipped: My React Portfolio Redesign", link: "#" },
-    { title: "📚 Mastering TypeScript: A Journey", link: "#" },
-    { title: "⚡ 5 Tips for Lightning-Fast Code Reviews", link: "#" },
-    { title: "🎨 Building This MySpace Clone Was Wild", link: "#" },
-    { title: "☕ Why I Code Better with Coffee", link: "#" }
+  const projects = [
+    {
+      name: "Multi-Channel AI Ecosystem",
+      description: "Contributed to and supported backend services for a multi-channel AI ecosystem (Web, Reddit Bot, Retail VA) using GCP Vertex AI and a RAG model to deliver up-to-date Samsung product responses.",
+      tech: ["Vertex AI", "RAG", "GCP", "Node.js", "TypeScript"],
+      type: "AI/ML",
+      image: "/images/WhySwitchPage.png"
+    },
+    {
+      name: "Conversational AI — Voice Pipeline",
+      description: "Contributed to and maintained the backend for a conversational AI with a voice-to-voice pipeline (Speech-to-Text → ElevenLabs TTS), scaling it from 4 Samsung stores to 400+ T-Mobile and Verizon stores with real-time WebSocket streaming.",
+      tech: ["WebSocket", "ElevenLabs", "GCP STT", "Node.js"],
+      type: "AI/ML"
+    },
+    {
+      name: "Jebi — Influencer Management Platform",
+      description: "Worked across the full stack on a ground-up rebuild of a gamified influencer management platform, helping cut cloud costs by 65% and supporting its transition into a multi-tenant B2B SaaS product.",
+      tech: ["Next.js", "TypeScript", "Node.js", "GCP", "Firestore"],
+      type: "B2B SaaS"
+    },
+    {
+      name: "HR Self-Service Chatbot",
+      description: "Built a full-stack RAG-powered chatbot using Gemini 2.5 Flash to automate employee self-service, helping reduce HR workload by giving employees instant access to company policies and IT support docs.",
+      tech: ["Next.js", "TypeScript", "Vertex AI"],
+      type: "Internal Tool",
+      image: "/images/AIChatbotAssistant.png"
+    },
+    {
+      name: "Carrier Partner Features",
+      description: "Worked with T-Mobile and Verizon teams to build responsive frontend features from processed and organized JSON data.",
+      tech: ["React", "JavaScript", "REST APIs", "HTML/CSS"],
+      type: "Consumer Web"
+    },
+    {
+      name: "MySpace Portfolio (This Site!)",
+      description: "A nostalgic MySpace-inspired developer portfolio because the early 2000s web aesthetic deserves a comeback.",
+      tech: ["Next.js", "TypeScript", "React"],
+      type: "Personal Project"
+    }
   ];
 
-  const aboutMe = `Hey there! I'm a passionate full-stack developer who loves building beautiful, functional web applications. 
-
-When I'm not coding, you can find me exploring new technologies, contributing to open source projects, or trying to perfect my coffee brewing technique. I believe great software comes from combining technical skill with creative problem-solving.
-
-Currently obsessed with React, TypeScript, and making the web more accessible for everyone. Always down to chat about code, collaborate on projects, or debate the best VS Code themes!
-
-Fun fact: I built this MySpace-inspired portfolio because I miss when the internet had more personality. Bring back the early 2000s web aesthetic! ✨`;
-
-  const whoIdLikeToMeet = `Fellow developers who are passionate about clean code and user experience! I'd love to connect with:
-
-• Frontend wizards who can make CSS do impossible things
-• Backend architects who design elegant APIs
-• UI/UX designers who understand both beauty and usability
-• Open source maintainers and contributors
-• Startup founders building cool products
-• Anyone who wants to chat about tech, grab coffee, or collaborate on projects
-
-If you're building something awesome or just want to geek out about code, let's connect! Always excited to meet people who share the passion for creating amazing digital experiences.`;
+  const aboutMe = `Howdy! I'm a passionate full-stack software engineer who loves building beautiful, impactful, functional web applications. When I'm not building, you can find me at the cutest coffee shop in town, spending time with those I love most, or attempting to golf... Currently mastering my skills in backend development. Always down to chat about opportunities, collaborate on projects, or debate the best VS Code themes (Atom One Dark)! I built this MySpace-inspired portfolio because it's nostalgic, duh. Bring back the early 2000s web aesthetic please!`;
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
@@ -73,7 +89,6 @@ If you're building something awesome or just want to geek out about code, let's 
         zIndex: 1000,
         backgroundColor: 'rgba(255, 255, 255, 0.95)',
         border: '2px solid #999',
-        borderRadius: '8px',
         padding: '10px',
         boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
         fontFamily: 'Arial, sans-serif',
@@ -92,7 +107,6 @@ If you're building something awesome or just want to geek out about code, let's 
                 fontSize: '10px',
                 border: currentTheme === theme.value ? '2px solid #333' : '1px solid #ccc',
                 backgroundColor: currentTheme === theme.value ? '#f0f0f0' : 'white',
-                borderRadius: '4px',
                 cursor: 'pointer',
                 fontWeight: currentTheme === theme.value ? 'bold' : 'normal'
               }}
@@ -107,10 +121,8 @@ If you're building something awesome or just want to geek out about code, let's 
       <MySpacePortfolio
         theme={currentTheme}
         profileData={profileData}
-        blogEntries={blogEntries}
         aboutMe={aboutMe}
-        whoIdLikeToMeet={whoIdLikeToMeet}
-        friendCount={127}
+        projects={projects}
       />
     </div>
   );
