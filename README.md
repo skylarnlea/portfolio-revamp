@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MySpace Portfolio
 
-## Getting Started
+My personal developer portfolio, replaced my initial/original portfoilio. 
+🔗 **Live:** [skylar.build](https://skylar.build)
 
-First, run the development server:
+## About
+
+This is a nostalgic, MySpace-inspired portfolio site built with Next.js. It features a fully themed profile page with switchable color themes, project showcases, modals for friends and pics, and all the over-the-top personality of the old internet.
+
+## Tech Stack
+
+- Next.js 15
+- React 19
+- TypeScript
+- Tailwind CSS
+
+## Why This Stack?
+
+- **Next.js** — Honestly a bit overkill for a single-page portfolio — I'm not really using server components here. But the project structure is clean, deployment to Vercel is effortless, and if I ever want to add a blog or API routes, the foundation is already there. More for my personal practice, as I started this when I first started learning Next.js.
+- **React** — It's what I know best and what I use professionally. No reason to fight the tools I'm already fast with.
+- **TypeScript** — I like catching dumb mistakes before they hit the browser. Types make refactoring way less scary.
+- **Tailwind CSS** — Speeds up styling a ton, especially for a project like this where I'm doing a lot of custom theming and want to move fast without wrestling with CSS files.
+
+## Running Locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## License
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This is a personal project — feel free to draw inspiration, but please don't copy it wholesale.
