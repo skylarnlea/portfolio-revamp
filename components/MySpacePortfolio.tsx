@@ -635,7 +635,7 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                     <tr>
                       <td style={{ padding: '15px' }}>
                         <div style={{ fontSize: '13px', marginBottom: '12px' }}>
-                          {profile.name} has worked on <strong>{projects.length}</strong> projects. <span style={{ fontSize: '11px', color: '#666' }}>(Built for private companies — source code is confidential)</span>
+                          Here are <strong>{projects.length}</strong> projects {profile.name} has worked on. <span style={{ fontSize: '11px', color: '#666' }}>(Built for private companies — source code is confidential)</span>
                         </div>
                         <div className="project-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '10px' }}>
                           {projects.map((project, i) => (
