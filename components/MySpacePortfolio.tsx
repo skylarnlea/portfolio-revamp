@@ -559,7 +559,13 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                     <tr>
                       <td style={{ padding: '12px' }}>
                         <div style={{ fontSize: '12px' }}>
-                          http://www.devspace.com/skylarlea
+                          https://github.com/skylarnlea/portfolio-revamp
+                        </div>
+                        <div style={{ fontSize: '12px' }}>
+                          https://github.com/skylarnlea/AI-chatbot
+                        </div>
+                        <div style={{ fontSize: '12px' }}>
+                          https://github.com/skylarnlea/postpartum-fitness-app
                         </div>
                       </td>
                     </tr>
