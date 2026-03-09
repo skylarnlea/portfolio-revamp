@@ -7,12 +7,12 @@ export default function Home() {
   const [currentTheme, setCurrentTheme] = useState<'pink' | 'blue' | 'green' | 'purple' | 'peach' | 'lavender'>('pink');
 
   const themes = [
-    { name: 'Pink Princess', value: 'pink' as const },
-    { name: 'Sky Blue', value: 'blue' as const },
-    { name: 'Mint Fresh', value: 'green' as const },
-    { name: 'Purple Rain', value: 'purple' as const },
-    { name: 'Peachy Keen', value: 'peach' as const },
-    { name: 'Lavender Dreams', value: 'lavender' as const }
+    { name: 'Pink Princess', value: 'pink' as const, color: '#FFCCFF' },
+    { name: 'Sky Blue', value: 'blue' as const, color: '#CCE7FF' },
+    { name: 'Mint Fresh', value: 'green' as const, color: '#D4EDDA' },
+    { name: 'Purple Rain', value: 'purple' as const, color: '#E6D7FF' },
+    { name: 'Peachy Keen', value: 'peach' as const, color: '#FFE4CC' },
+    { name: 'Lavender Dreams', value: 'lavender' as const, color: '#F0E6FF' }
   ];
 
   // Your profile data
@@ -51,7 +51,7 @@ export default function Home() {
       type: "AI/ML"
     },
     {
-      name: "Jebi — Influencer Management Platform",
+      name: "Influencer Management Platform",
       description: "Worked across the full stack on a ground-up rebuild of a gamified influencer management platform, helping cut cloud costs by 65% and supporting its transition into a multi-tenant B2B SaaS product.",
       tech: ["Next.js", "TypeScript", "Node.js", "GCP", "Firestore"],
       type: "B2B SaaS"
@@ -81,48 +81,36 @@ export default function Home() {
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
-      {/* Theme Switcher */}
-      <div style={{
-        position: 'fixed',
-        top: '15px',
-        right: '15px',
-        zIndex: 1000,
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-        border: '2px solid #999',
-        padding: '10px',
-        boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '11px'
-      }}>
-        <div style={{ fontWeight: 'bold', marginBottom: '8px', textAlign: 'center' }}>
-          🎨 Choose Theme
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
-          {themes.map((theme) => (
-            <button
-              key={theme.value}
-              onClick={() => setCurrentTheme(theme.value)}
-              style={{
-                padding: '4px 8px',
-                fontSize: '10px',
-                border: currentTheme === theme.value ? '2px solid #333' : '1px solid #ccc',
-                backgroundColor: currentTheme === theme.value ? '#f0f0f0' : 'white',
-                cursor: 'pointer',
-                fontWeight: currentTheme === theme.value ? 'bold' : 'normal'
-              }}
-            >
-              {theme.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* MySpace Portfolio */}
       <MySpacePortfolio
         theme={currentTheme}
         profileData={profileData}
         aboutMe={aboutMe}
         projects={projects}
+        themeCircles={
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            {themes.map((t) => (
+              <button
+                key={t.value}
+                className="theme-circle"
+                onClick={() => setCurrentTheme(t.value)}
+                title={t.name}
+                style={{
+                  width: currentTheme === t.value ? '18px' : '14px',
+                  height: currentTheme === t.value ? '18px' : '14px',
+                  borderRadius: '50%',
+                  backgroundColor: t.color,
+                  border: currentTheme === t.value ? '2px solid white' : '1px solid rgba(255,255,255,0.6)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  transition: 'transform 0.15s ease, width 0.15s ease, height 0.15s ease',
+                  boxShadow: currentTheme === t.value ? '0 0 4px rgba(0,0,0,0.3)' : 'none',
+                  flexShrink: 0
+                }}
+              />
+            ))}
+          </div>
+        }
       />
     </div>
   );

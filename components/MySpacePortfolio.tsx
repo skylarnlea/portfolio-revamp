@@ -36,6 +36,7 @@ interface MySpacePortfolioProps {
   aboutMe?: string;
   projects?: Project[];
   theme?: 'pink' | 'blue' | 'green' | 'purple' | 'peach' | 'lavender';
+  themeCircles?: React.ReactNode;
 }
 
 const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
@@ -43,7 +44,8 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
   backgroundImage = "",
   theme = 'pink',
   aboutMe = "Add your developer story here...",
-  projects = []
+  projects = [],
+  themeCircles
 }) => {
   const [copied, setCopied] = useState<boolean>(false);
   const [bookmarkHint, setBookmarkHint] = useState<string>('');
@@ -331,19 +333,21 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
 
   return (
     <div style={{ minHeight: '100vh', ...backgroundStyle, fontFamily: 'Arial, sans-serif', fontSize: '14px' }}>
-      
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-        <table width="100%" cellPadding={0} style={{ borderCollapse: 'separate', borderSpacing: '20px 0' }}>
-          <tbody>
-            <tr>
-              <td width={400} style={{ verticalAlign: 'top' }}>
-                
+
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '12px' }}>
+        <div className="myspace-layout" style={{ display: 'flex', gap: '20px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          {/* Left Column */}
+          <div className="myspace-left-col" style={{ width: '100%', maxWidth: '340px', flexShrink: 0 }}>
+
                 {/* Main Profile */}
                 <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.profileHeader}`, backgroundColor: currentTheme.profileBg, marginBottom: '15px' }}>
                   <tbody>
                     <tr>
                       <td style={{ backgroundColor: currentTheme.profileHeader, color: 'white', padding: '8px 15px', fontSize: '14px', fontWeight: 'bold' }}>
-                        {profile.name}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span>{profile.name}</span>
+                          {themeCircles}
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -355,7 +359,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                             width={300}
                             height={400}
                             style={{ 
-                              border: '1px solid black',
                               objectFit: 'contain',
                               width: '100%',
                               height: 'auto',
@@ -586,10 +589,10 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                     </tr>
                   </tbody>
                 </table>
-              </td>
+          </div>
               
-              {/* Main Content */}
-              <td style={{ verticalAlign: 'top' }}>
+          {/* Right Column — Main Content */}
+          <div className="myspace-right-col" style={{ flex: 1, minWidth: 0 }}>
                 
                 {/* Extended Network */}
                 <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: '1px solid #999', backgroundColor: 'white', marginBottom: '15px' }}>
@@ -634,7 +637,7 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                         <div style={{ fontSize: '13px', marginBottom: '12px' }}>
                           {profile.name} has worked on <strong>{projects.length}</strong> projects. <span style={{ fontSize: '11px', color: '#666' }}>(Built for private companies — source code is confidential)</span>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                        <div className="project-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '10px' }}>
                           {projects.map((project, i) => (
                             <div key={i} style={{ border: '1px solid #999', backgroundColor: 'white', padding: '10px' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
@@ -686,10 +689,8 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                     </tr>
                   </tbody>
                 </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
 
       {/* Modals */}
