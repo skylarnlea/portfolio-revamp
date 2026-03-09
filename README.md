@@ -5,7 +5,7 @@ My personal developer portfolio, replaced my initial/original portfoilio.
 
 ## About
 
-This is a nostalgic, MySpace-inspired portfolio site built with Next.js. It features a fully themed profile page with switchable color themes, project showcases, modals for friends and pics, and all the over-the-top personality of the old internet.
+This is a nostalgic, MySpace-inspired portfolio site built with Next.js. It features a fully themed profile page with switchable color themes, project showcases, modals for friends and skills, and all the over-the-top personality of the old internet.
 
 ## Tech Stack
 

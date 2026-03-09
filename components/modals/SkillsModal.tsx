@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from './Modal';
 
-interface PicsModalProps {
+interface SkillsModalProps {
   isOpen: boolean;
   onClose: () => void;
   headerBgColor: string;
@@ -35,7 +35,7 @@ const skillCategories = [
   }
 ];
 
-const PicsModal: React.FC<PicsModalProps> = ({
+const SkillsModal: React.FC<SkillsModalProps> = ({
   isOpen,
   onClose,
   headerBgColor,
@@ -76,4 +76,4 @@ const PicsModal: React.FC<PicsModalProps> = ({
   );
 };
 
-export default PicsModal;
+export default SkillsModal;

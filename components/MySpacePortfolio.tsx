@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import FriendsModal from './modals/FriendsModal';
-import PicsModal from './modals/PicsModal';
+import SkillsModal from './modals/SkillsModal';
 
 interface ProfileData {
   name: string;
@@ -51,7 +51,7 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
   const [bookmarkHint, setBookmarkHint] = useState<string>('');
   const [friendHint, setFriendHint] = useState<string>('');
   const [showFriendsModal, setShowFriendsModal] = useState<boolean>(false);
-  const [showPicsModal, setShowPicsModal] = useState<boolean>(false);
+  const [showSkillsModal, setShowSkillsModal] = useState<boolean>(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   // Copy current page URL to clipboard
@@ -181,13 +181,13 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
 
   const profile = { ...defaultProfile, ...profileData };
 
-  // Open/close Pics modal
-  const openPicsModal = (e?: React.MouseEvent<HTMLAnchorElement>): void => {
+  // Open/close Skills modal
+  const openSkillsModal = (e?: React.MouseEvent<HTMLAnchorElement>): void => {
     if (e) e.preventDefault();
-    setShowPicsModal(true);
+    setShowSkillsModal(true);
   };
-  const closePicsModal = (): void => {
-    setShowPicsModal(false);
+  const closeSkillsModal = (): void => {
+    setShowSkillsModal(false);
   };
 
   // Open/close Friends modal
@@ -452,7 +452,7 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                         
                         <div style={{ marginTop: '12px', fontSize: '12px' }}>
                           <span style={{ color: '#333' }}>View My:</span>{' '}
-                          <a href="#pics" onClick={openPicsModal} style={{ color: '#0066CC' }}>Skills &amp; Tools</a>
+                          <a href="#skills" onClick={openSkillsModal} style={{ color: '#0066CC' }}>Skills &amp; Tools</a>
                         </div>
                       </td>
                     </tr>
@@ -706,9 +706,9 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
         onCopyPageUrl={handleCopyPageUrl}
       />
 
-      <PicsModal
-        isOpen={showPicsModal}
-        onClose={closePicsModal}
+      <SkillsModal
+        isOpen={showSkillsModal}
+        onClose={closeSkillsModal}
         headerBgColor={currentTheme.detailsHeader}
         contentBgColor={currentTheme.detailsBg}
       />
