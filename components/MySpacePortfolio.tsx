@@ -548,30 +548,6 @@ const MySpacePortfolio: React.FC<MySpacePortfolioProps> = ({
                   </tbody>
                 </table>
 
-                {/* MySpace URL */}
-                <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.urlHeader}`, backgroundColor: currentTheme.urlBg, marginBottom: '15px' }}>
-                  <tbody>
-                    <tr>
-                      <td style={{ backgroundColor: currentTheme.urlHeader, color: 'white', padding: '6px 12px', fontSize: '14px', fontWeight: 'bold' }}>
-                        DevSpace URL:
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ padding: '12px' }}>
-                        <div style={{ fontSize: '12px' }}>
-                          https://github.com/skylarnlea/portfolio-revamp
-                        </div>
-                        <div style={{ fontSize: '12px' }}>
-                          https://github.com/skylarnlea/AI-chatbot
-                        </div>
-                        <div style={{ fontSize: '12px' }}>
-                          https://github.com/skylarnlea/postpartum-fitness-app
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
                 {/* Details */}
                 <table width="100%" cellPadding={0} cellSpacing={0} style={{ border: `2px solid ${currentTheme.detailsHeader}`, backgroundColor: currentTheme.detailsBg }}>
                   <tbody>
